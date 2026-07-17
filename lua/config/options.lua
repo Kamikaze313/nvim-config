@@ -3,3 +3,9 @@
 
 vim.opt.winbar = "%=%m %f" --Show current path in top right of the screen
 --vim.opt.statuscolumn = "%s %{v:relnum}  %{v:lnum} " --Show both rel line num and abs line num
+vim.g.autoformat = false
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.expandtab = false -- use tabs
+vim.opt.smarttab = true
