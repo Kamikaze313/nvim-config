@@ -1,24 +1,13 @@
--- 1. Load LazyVim/Plugins first
+-- Entry point: Neovim loads this file on startup.
+-- Load settings first, then shortcuts and automatic actions, so later modules
+-- can rely on earlier choices, including the leader key used by plugin shortcuts.
+require("config.options")
+require("config.keymaps")
+require("config.autocmds")
+
+-- Start only the selected plugin manager after our editor configuration.
+-- It loads only selected features; see docs/plugin-manager.md.
 require("config.lazy")
 
--- 2. THE MASTER UNLOCK (Fixes E1513)
--- This forces 'winfixbuf' to OFF every time you switch windows or buffers.
--- This overrides plugins like snacks.nvim that try to lock your layout.
-vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
-  callback = function()
-    vim.opt.winfixbuf = false
-  end,
-})
-vim.opt.clipboard = "unnamedplus"
--- vim.g.clipboard = {
---   name = 'win32yank-wsl',
---   copy = {
---     ['+'] = 'win32yank.exe -i --crlf',
---     ['*'] = 'win32yank.exe -i --crlf',
---   },
---   paste = {
---     ['+'] = 'win32yank.exe -o --lf',
---     ['*'] = 'win32yank.exe -o --lf',
---   },
---   cache_enabled = 0,
--- }
+-- Restore the selected colorscheme after lazy.nvim can load theme plugins on demand.
+require("config.theme").setup()

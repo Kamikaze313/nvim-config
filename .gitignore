@@ -1,9 +1,8 @@
-tt.*
-.tests
-doc/tags
-debug
-.repro
-foo.*
+# Local snapshots contain the previous configuration and Git metadata.
+.backups/
+
+# Editor recovery files and local logs do not belong in version control.
+*.swp
+*.swo
+*~
 *.log
-data
-lua/plugins/disable-treesitter.lua

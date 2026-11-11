@@ -1,11 +1,7 @@
--- Options are automatically loaded before lazy.nvim startup
--- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
+-- Editor settings belong here, using vim.opt or vim.g as appropriate.
+-- Space starts our plugin shortcuts (for example, Space f f finds files).
+-- Define it before lazy.nvim creates mappings so <leader> expands consistently.
+vim.g.mapleader = " "
 
-vim.opt.winbar = "%=%m %f" --Show current path in top right of the screen
---vim.opt.statuscolumn = "%s %{v:relnum}  %{v:lnum} " --Show both rel line num and abs line num
-vim.g.autoformat = false
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.softtabstop = 4
-vim.opt.expandtab = false -- use tabs
-vim.opt.smarttab = true
+-- Use exact RGB colors for Everforest and the default theme; Kitty supports true color.
+vim.opt.termguicolors = true

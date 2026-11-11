@@ -1,3 +1,6 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
+-- General keyboard shortcuts belong here; plugin shortcuts belong with the plugin.
+-- Normal mode: choose Default or Everforest and remember the choice across restarts.
+-- Defer requiring the theme module until use; setup runs after lazy.nvim in init.lua.
+vim.keymap.set("n", "<leader>uc", function()
+  require("config.theme").select()
+end, { desc = "Choose colorscheme" })
