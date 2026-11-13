@@ -35,6 +35,10 @@ return {
         spec = {
           -- Label existing normal-mode Telescope shortcuts; no new action is mapped.
           { "<leader>f", group = "Find", mode = "n" },
+          -- Label the selected current-file/project replacement shortcuts.
+          { "<leader>s", group = "Search / replace", mode = "n" },
+          -- Label manual linting and the completion on/off switch.
+          { "<leader>c", group = "Code", mode = "n" },
           -- Label Git actions in normal and visual modes; actions remain buffer-local.
           { "<leader>h", group = "Git hunks", mode = { "n", "x" } },
           -- Label the selected appearance control without creating another action.

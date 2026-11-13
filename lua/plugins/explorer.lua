@@ -8,6 +8,8 @@ return {
     -- Snacks recommends early setup; the sidebar itself opens only on request.
     lazy = false,
     priority = 1000,
+    -- Load and configure the selected icon provider before Snacks uses it.
+    dependencies = { "nvim-mini/mini.icons" },
     opts = {
       explorer = {
         -- Enable the selected file explorer and its file-operation helpers.
@@ -29,8 +31,8 @@ return {
             -- Opening a file leaves the tree visible for further navigation.
             jump = { close = false },
             icons = {
-              -- File names and tree lines work without an icon plugin or special font.
-              files = { enabled = false },
+              -- Show file/extension and folder glyphs supplied by mini.icons.
+              files = { enabled = true },
               -- Use Git status letters instead of font-specific status symbols.
               git = { enabled = false },
               -- Use readable markers when searching or selecting multiple files.

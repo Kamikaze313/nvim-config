@@ -7,8 +7,12 @@ before selection, then installed and documented after selection.
 
 - Neovim with LuaJIT and lazy.nvim selected only as a plugin manager.
 - Telescope provides file and text search, with plenary as its required helper.
+- grug-far provides visual find/replace on `Space s r` (current file) and `Space s R` (project), using installed ripgrep.
+- Python uses Pyright through native LSP for type checks/navigation, plus Flake8 through nvim-lint for code/style diagnostics.
+- blink.cmp offers automatic LSP, path, and buffer-word suggestions with documentation; `Space c c` toggles completion for the session.
 - Oil provides directory browsing and file operations, with no plugin dependencies.
 - Snacks Explorer provides a left file sidebar on `Space e`, using its bundled picker and installed fd/Git.
+- mini.icons supplies Explorer's file/folder icons and grug-far's result file icons; Nerd Fonts 3+ glyph support is required (already configured in Kitty).
 - Gitsigns shows Git changes beside lines and provides hunk actions; it requires Git only.
 - Which-key shows available shortcuts after a 200 ms pause; no extra plugins or special font are required.
 - mini.pairs inserts matching brackets and quotes in insert mode, with no additional dependencies.
@@ -18,9 +22,13 @@ before selection, then installed and documented after selection.
 - Space is the shortcut leader; Telescope loads only when invoked.
 - Oil loads at startup to handle directory arguments such as `nvim .`.
 - Gitsigns loads when opening a file or running `:Gitsigns` and attaches to Git-tracked files.
-- Which-key loads just after startup and labels Find, Git hunks, and Appearance.
+- Which-key loads just after startup and labels Find, Search / replace, Code, Git hunks, and Appearance.
+- grug-far loads on request, starts with literal matching, and previews changes before the Replace action writes files.
+- Pyright starts for Python buffers and checks while editing; Flake8 checks on buffer entry/save or `Space c l`. Diagnostics appear beside the code.
+- Blink sets up at startup using its Lua matcher, without additional plugins or native binary downloads; command-line and terminal completion remain unchanged.
 - mini.pairs sets up at startup so Telescope search prompts are excluded even on first use; command-line and terminal input are excluded.
 - Snacks sets up at startup; the sidebar opens on request, leaving directory buffers to Oil.
+- mini.icons loads before Snacks as its dependency and selects icons automatically by filename, extension, and folder.
 - RGB colors are enabled; other editing settings use Neovim defaults and automatic formatting is not configured.
 - Plugin installation and update checks are manual; see [manager instructions](docs/plugin-manager.md).
 - Search dependencies `fd` and `rg` are installed in `~/.local/bin/` on this device; they are separate from the plugins.
@@ -49,20 +57,30 @@ for dependencies and installation checks.
 | `lua/config/terminal.lua` | Reusable native shell in a bottom split; loads on first toggle. |
 | `lua/config/autocmds.lua` | Clear retained quit-command text after a successful close. |
 | `lua/config/lazy.lua` | Manager bootstrap and documented minimal behavior. |
+| `lua/config/python.lua` | Python environment lookup, diagnostic display, and native Pyright activation. |
+| `lsp/pyright.lua` | Pyright server command, project roots, basic type checks, interpreter, and gd mapping. |
 | `lua/plugins/telescope.lua` | Search plugin, dependency, and shortcuts. |
+| `lua/plugins/replace.lua` | Visual replacement form, current-file/project scope, literal defaults, and shortcuts. |
+| `lua/plugins/lint.lua` | Python Flake8 adapter, automatic/manual checks, and severity handling. |
+| `lua/plugins/completion.lua` | Blink suggestions, documentation, sources, Lua matcher, and enable/disable toggle. |
 | `lua/plugins/oil.lua` | Directory editor, confirmation behavior, and parent-directory shortcut. |
 | `lua/plugins/gitsigns.lua` | Git change markers, loading behavior, and buffer-local hunk shortcuts. |
 | `lua/plugins/which-key.lua` | Shortcut hints, popup delay, group labels, and plain-text key labels. |
 | `lua/plugins/explorer.lua` | Project file sidebar, Space e toggle, and required bundled helpers. |
+| `lua/plugins/icons.lua` | Standalone icon provider, glyph style, and optional file/extension overrides. |
 | `lua/plugins/everforest.lua` | Everforest colorscheme, loaded only when selected. |
 | `lua/plugins/pairs.lua` | Insert-mode bracket/quote pairing, loading behavior, and mode selection. |
 | `lazy-lock.json` | Generated version record for lazy.nvim and all selected plugins. |
 | `docs/plugin-manager.md` | Manager commands, dependencies, behavior, and disabling instructions. |
 | `docs/telescope.md` | Brief search usage guide, controls, configuration, and removal. |
+| `docs/replace.md` | Visual search/replace controls, examples, disk-write behavior, customization, and removal. |
+| `docs/python.md` | Python/Pyright/Flake8 installation, environments, diagnostics, controls, and disabling. |
+| `docs/completion.md` | Completion controls, practical example, session toggle, customization, and removal. |
 | `docs/oil.md` | Directory navigation, file editing, confirmation, and removal. |
 | `docs/gitsigns.md` | Git signs, hunk navigation/actions, blame, dependencies, and removal. |
 | `docs/which-key.md` | Shortcut popup controls, examples, automatic behavior, and removal. |
 | `docs/explorer.md` | File-tree navigation, file operations, dependencies, and removal. |
+| `docs/icons.md` | File icons, font requirements, customization examples, and disabling instructions. |
 | `docs/appearance.md` | Theme switching, persistence, Kitty font chooser, and disabling instructions. |
 | `docs/terminal.md` | Bottom terminal controls, shell lifecycle, dependencies, and disabling instructions. |
 | `docs/command-line.md` | Quit-command display cleanup, examples, and disabling instructions. |
@@ -96,6 +114,11 @@ Press these sequences in normal mode. `<leader>` means **Space**.
 | `Space f b` | Switch between open buffers. |
 | `Space f r` | Reopen recent files. |
 | `Space f h` | Search Neovim and installed plugin help. |
+| `Space s r` | Open visual find/replace for the current saved file. |
+| `Space s R` | Open visual find/replace for the current file's Git root, or working directory. |
+| `Space c l` | Run Flake8 on the current Python buffer, including unsaved edits. |
+| `Space c c` | Toggle Blink completion across all buffers for this Neovim session. |
+| `gd` (Python with Pyright) | Go to definition; Ctrl-o returns. |
 | `-` | Open the current file's directory in Oil; inside Oil, go up one level. |
 | `Space e` | Toggle the left file tree at the current file's Git root, or working directory outside Git. |
 | `Space u c` | Choose Default or Everforest and remember it across restarts. |
@@ -109,6 +132,18 @@ Press these sequences in normal mode. `<leader>` means **Space**.
 The Git shortcuts are local to buffers attached to Gitsigns. `Space h s` and
 `Space h r` also work in visual mode on the selected lines.
 
+For Python, open `example.py` and type `print(missing_name)`. Pyright reports
+the undefined name while editing; save or press **Space c l** for Flake8's
+`F821` diagnostic. **]d / [d** move through diagnostics, **Ctrl-w d** opens the
+full message, **K** shows hover documentation, and **grn** renames a symbol.
+See the [Python guide](docs/python.md) for examples, environments, and dependencies.
+
+For completion, type `import os` in a Python file, then type `os.pa` on the next
+line. Use **Ctrl-n / Ctrl-p** or arrow keys to select a suggestion, **Ctrl-y** to
+accept, and **Ctrl-e** to dismiss. Documentation appears after selection.
+Press **Esc**, then **Space c c** to switch completion off or back on; restarting
+Neovim enables it again. See the [completion guide](docs/completion.md).
+
 To discover shortcuts, press **Space** in normal mode and pause briefly. Press
 **f** to see the Find group, then **f** again to open Telescope's file picker.
 Press **Esc** to dismiss a which-key popup, or use `:WhichKey` to open the helper
@@ -119,6 +154,12 @@ and press Enter to open the selected file. Inside the picker, use Ctrl-n/Ctrl-p
 to move and Ctrl-c to close from insert mode. See the [Telescope guide](docs/telescope.md)
 for commands and more controls. Neovim's built-in commands such as `:help`,
 `:Tutor`, `:checkhealth`, `:write`, and `:quit` remain available.
+
+To replace text visually, save the file and press **Space s r**. Type `old_function`
+in Search, press **Esc**, then **Tab** and **i** to fill Replace with `new_function`.
+Press **Esc**, review the live preview, and press **Space r** inside the panel to
+apply to disk. **q** in normal mode closes the panel. **Space s R** opens project
+scope; the Paths field shows the target. See the [replacement guide](docs/replace.md).
 
 To manage files, press `-`, move with `j`/`k`, and press Enter to open a file or
 directory. Edit a filename to rename it, then `:w` to review the pending file
@@ -131,6 +172,9 @@ press **Enter** or **l** to expand a folder or open a file. Use **h** to collaps
 a folder, **Ctrl-w h/l** to move between the sidebar and code, and **Space e**
 again to close it. Inside the tree, **q** also closes it and **?** shows controls.
 See the [Explorer guide](docs/explorer.md) for file operations and examples.
+File and folder icons appear automatically; for example, `init.lua` and
+`README.md` display their recognized file icons. See the [icon guide](docs/icons.md)
+to change symbols or colors for particular filenames and extensions.
 
 To review Git changes, open a tracked file, edit a line, then press `Space h p`
 to preview the hunk. Move the cursor to close the popup. Use `Space h s` to

@@ -18,6 +18,11 @@ folder or move to its parent. Opening a file focuses the code and leaves the
 sidebar visible. **Ctrl-w h** returns to the sidebar; **Ctrl-w l** returns to
 the code in a simple two-window layout. **Ctrl-w w** cycles windows.
 
+File and folder icons appear automatically through the selected **mini.icons**
+provider. For example, `main.c`, `init.lua`, and `README.md` get icons appropriate
+to their file types. See the [icon guide](icons.md) for font requirements and
+custom symbols/colors by filename or extension.
+
 Press **Space e** again to close the sidebar. When focused in the tree,
 **q** or **Esc** also closes it. Press **?** in the tree for the complete
 upstream key list, then **?** again to hide help. **q** closes the sidebar and
@@ -77,15 +82,18 @@ closed by the operation, so save wanted edits before deleting through the tree.
 
 The installed release is **folke/snacks.nvim v2.31.0**. It requires Neovim
 **0.9.4+**; this machine has 0.12.0-dev. Explorer uses Snacks' bundled **picker**, tree, window/layout,
-input, rename, and file-operation helpers. These are modules in one plugin;
-no separate dependency plugins are installed.
+input, rename, and file-operation helpers. These are modules in one plugin.
+The selected standalone **nvim-mini/mini.icons** plugin is an explicit Snacks
+dependency, configured in `lua/plugins/icons.lua` and loaded before Snacks.
 
 **fd 8.4+** is required for Explorer's search (installed: 10.3.0 in
 `~/.local/bin/`, already included in the shell's `PATH`). **Git** supplies
 repository status and is also used by lazy.nvim for installation. Ripgrep is
 already installed for Telescope and is used if you invoke the explorer's
 optional grep action. A supported system-trash command is optional; see deletion
-behavior above. No icon plugin or Nerd Font is required for this configuration.
+behavior above. File/folder icons use mini.icons and require Nerd Fonts **3+**
+glyph support; Kitty's configured MonoLisa Nerd Font Mono is already installed.
+Browsing itself still works with icons disabled; see the [icon guide](icons.md).
 
 `fd` and `rg` are external dependencies, separate from downloaded plugins.
 Install them on each new device; see [new-device setup](plugin-manager.md#on-a-new-device).
@@ -99,6 +107,7 @@ installed commit into `lazy-lock.json`. The previous Snacks checkout is preserve
 | --- | --- | --- |
 | `version` | `"*"` | Follow stable releases on manual updates and record the installed commit. |
 | `lazy`, `priority` | `false`, `1000` | Set up Snacks early as upstream recommends; open the sidebar only on request. |
+| `dependencies` | `nvim-mini/mini.icons` | Initialize the selected icon provider before Snacks. |
 | `explorer.enabled` | `true` | Enable the selected file sidebar. |
 | `explorer.replace_netrw` | `false` | Keep directory arguments and directory buffers handled by Oil. |
 | `picker.enabled` | `true` | Explorer requires the bundled picker engine. |
@@ -106,7 +115,7 @@ installed commit into `lazy-lock.json`. The previous Snacks checkout is preserve
 | `picker.prompt` | `"> "` | Use an ordinary text search prompt. |
 | `picker.sources.explorer.layout` | `sidebar`, preview disabled | Show the tree on the left without covering the code with a preview. |
 | `picker.sources.explorer.jump.close` | `false` | Keep the tree open when selecting a file. |
-| Explorer `icons.files.enabled` | `false` | Show names and tree lines without an icon plugin. |
+| Explorer `icons.files.enabled` | `true` | Show mini.icons glyphs for filenames, extensions, and folders. |
 | Explorer `icons.git.enabled` | `false` | Show Git status letters instead of icon-font glyphs. |
 | Explorer `icons.ui` | Text markers for live search and selected/unselected items | Keep search/selection indicators readable. |
 | Explorer `icons.diagnostics` | `E`, `W`, `H`, `I` | Render native diagnostic labels as text when present. |

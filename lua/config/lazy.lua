@@ -23,10 +23,14 @@ require("lazy").setup({
   -- Explicit imports keep the list limited to features selected by the user.
   spec = {
     { import = "plugins.telescope" }, -- File, text, buffer, history, and help search.
+    { import = "plugins.replace" }, -- Visual find/replace in a file or project.
+    { import = "plugins.lint" }, -- Flake8 diagnostics for Python through nvim-lint.
+    { import = "plugins.completion" }, -- Automatic suggestions and session-wide toggle.
     { import = "plugins.oil" }, -- Browse directories and edit file names as a buffer.
     { import = "plugins.gitsigns" }, -- Git change markers and per-hunk actions.
     { import = "plugins.which-key" }, -- Discover shortcuts in a popup after pausing.
     { import = "plugins.explorer" }, -- Project file sidebar with Snacks' bundled picker.
+    { import = "plugins.icons" }, -- File/folder icons, loaded as a Snacks dependency.
     { import = "plugins.everforest" }, -- Optional palette in the two-choice theme menu.
     { import = "plugins.pairs" }, -- Matching brackets/quotes while typing in insert mode.
   },

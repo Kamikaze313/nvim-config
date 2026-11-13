@@ -4,6 +4,10 @@ Which-key displays available keys and their descriptions when you pause during
 a shortcut. It reads the existing mappings, including lazy-loaded Telescope
 shortcuts, Gitsigns actions local to the current buffer, Space e for Explorer,
 and the Appearance group at Space u (Space u c chooses a colorscheme).
+The **Search / replace** group at **Space s** lists **r** for the current file
+and **R** for the project; see the [replacement guide](replace.md).
+The **Code** group at **Space c** includes **l** for manual Python linting and
+**c** to enable/disable completion for the session.
 
 ## Brief usage
 
@@ -32,6 +36,8 @@ controls; **n** means normal mode and **x** means visual selection mode.
 | --- | --- | --- |
 | n | `Space`, then pause | Show available leader shortcuts and group labels. |
 | n | `Space f`, then pause | Show the existing Telescope search shortcuts. |
+| n | `Space s`, then pause | Show current-file and project find/replace shortcuts. |
+| n | `Space c`, then pause | Show manual Python linting and the completion toggle. |
 | n, x; Gitsigns attached | `Space h`, then pause | Show Git hunk actions available in the current mode. |
 | Popup | Displayed next key | Continue the shortcut or execute its action. |
 | Popup | `Esc` | Cancel and dismiss hints. |
@@ -74,6 +80,8 @@ by `lua/config/lazy.lua`.
 | `icons.mappings` | `false` | Show descriptions without icon dependencies. |
 | `icons.keys` | Text names for special keys | Display Space, Ctrl-, Enter, arrows, function keys, etc. without special font glyphs. |
 | `spec` Find group | `<leader>f`, normal mode | Label the existing Telescope shortcuts. |
+| `spec` Search / replace group | `<leader>s`, normal mode | Label grug-far's current-file/project shortcuts. |
+| `spec` Code group | `<leader>c`, normal mode | Label Flake8 and the completion toggle. |
 | `spec` Git hunks group | `<leader>h`, normal and visual modes | Label existing buffer-local Gitsigns actions. |
 | `spec` Appearance group | `<leader>u`, normal mode | Label the selected colorscheme menu shortcut. |
 

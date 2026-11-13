@@ -9,5 +9,8 @@ require("config.autocmds")
 -- It loads only selected features; see docs/plugin-manager.md.
 require("config.lazy")
 
+-- Show diagnostics and enable the selected Python language server through native LSP.
+require("config.python").setup()
+
 -- Restore the selected colorscheme after lazy.nvim can load theme plugins on demand.
 require("config.theme").setup()

@@ -8,15 +8,19 @@ choose individually. No LazyVim distribution or feature bundle is imported.
 `init.lua` loads `lua/config/lazy.lua` after the editor configuration modules.
 The manager exposes `:Lazy` and manages installation, updates, version records,
 dependencies, and plugin loading. The `spec` table explicitly imports
-`plugins.telescope`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`,
-`plugins.explorer`, `plugins.everforest`, and `plugins.pairs`.
+`plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`,
+`plugins.oil`, `plugins.gitsigns`, `plugins.which-key`,
+`plugins.explorer`, `plugins.icons`, `plugins.everforest`, and `plugins.pairs`.
 The manager currently lists itself, Telescope, Telescope's required helper plenary,
 Oil, Gitsigns, which-key, Snacks (Explorer with its bundled picker), Everforest,
-and the standalone mini.pairs plugin.
+grug-far, nvim-lint, blink.cmp, and the standalone mini.pairs and mini.icons plugins.
 See the [Telescope usage guide](telescope.md), [Oil usage guide](oil.md),
 [Gitsigns usage guide](gitsigns.md), [which-key usage guide](which-key.md), and
-[Explorer usage guide](explorer.md), and [pairing usage guide](pairs.md).
+[Explorer usage guide](explorer.md), [icon guide](icons.md), and [pairing usage guide](pairs.md).
 Theme selection and terminal fonts are covered in the [appearance guide](appearance.md).
+Visual find/replace is covered in the [replacement guide](replace.md).
+Python's Flake8 and native Pyright setup is covered in the [Python guide](python.md).
+Automatic completion and its session toggle are covered in the [completion guide](completion.md).
 
 Dependencies: Neovim with LuaJIT and Git. The existing manager checkout was
 copied into the new plugin directory; no download was needed. On a fresh machine,
@@ -31,7 +35,7 @@ returns to the editor instead of exiting it.
 | `plugin_root` | `stdpath("data") .. "/lazy-selected"` | Directory for this rebuild's manager and selected plugins. |
 | `lazypath` | `plugin_root .. "/lazy.nvim"` | Load the manager's separate checkout, or bootstrap it there when absent. |
 | `rtp:prepend(lazypath)` | Manager directory first in the runtime path | Make its Lua module available. |
-| `spec` | Explicit imports of `plugins.telescope`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`, `plugins.explorer`, `plugins.everforest`, and `plugins.pairs` | Load only the selected feature specifications. |
+| `spec` | Explicit imports of `plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`, `plugins.explorer`, `plugins.icons`, `plugins.everforest`, and `plugins.pairs` | Load only the selected feature specifications. |
 | `root` | `stdpath("data") .. "/lazy-selected"` | Keep the rebuild's plugins separate from previous plugin installations. |
 | `local_spec` | `false` | Prevent project `.lazy.lua` files from extending the selected plugin list. |
 | `install.missing` | `false` | Install declared plugins explicitly, not during normal startup. |
@@ -54,12 +58,25 @@ Snacks is set up early at startup as recommended upstream, with only Explorer
 and its required picker enabled. The sidebar opens on `Space e`; Oil keeps
 handling directory buffers. Explorer uses bundled input/window/file-operation
 helpers on demand without replacing general input or selection dialogs.
+The standalone mini.icons provider loads before Snacks as its explicit dependency
+and supplies Explorer's file/folder icons. It does not import other mini modules.
 Everforest loads on `:colorscheme everforest`, including when `:Theme` applies
 it or the saved theme is restored at startup. Default is built into Neovim.
 mini.pairs sets up at startup and creates its upstream insert-mode
 pair/Backspace/Enter mappings. Early setup lets its upstream Telescope prompt
 exclusion work even when search is used first. Command-line and terminal pairing
 are disabled.
+grug-far loads on its replacement shortcuts or `:GrugFar` / `:GrugFarWithin`.
+It uses the existing ripgrep executable and optional mini.icons provider, with
+no additional dependency plugins. Searches and change previews update as typed;
+the user explicitly triggers replacement to write affected files.
+nvim-lint loads for Python or `:Flake8` and runs the external Flake8 tool on
+buffer entry/save or explicit requests. Pyright uses Neovim's native LSP;
+its server is installed separately through npm and is not a lazy.nvim plugin.
+Blink initializes at startup before native LSP clients start, so its upstream
+plugin can advertise completion capabilities through `vim.lsp.config('*', ...)`.
+Its bundled Lua matcher and LSP/path/buffer sources require no helper plugins,
+native binary downloads, or Rust compiler. Space c c toggles it for the session.
 
 The manager itself does not configure editing shortcuts, a theme, completion, language
 servers, a dashboard, or formatting. No custom keymap opens its interface; use
@@ -114,16 +131,22 @@ directory do not count as installed for this configuration. Preserve that old
 directory and `.backups/`.
 
 External search tools must also be installed on the new device: `rg` (ripgrep)
-for Telescope's text search, and `fd` or `fdfind` version 8.4+ for Explorer's
+version 14+ for Telescope's text search and grug-far, and `fd` or `fdfind` version 8.4+ for Explorer's
 search. Their availability on the previous device does not transfer with this
 repository. On this device, fd 10.3.0 and ripgrep 14.1.1 were installed from
 their official Linux releases into `~/.local/bin/`, already included in the
 shell's `PATH`. Ubuntu 22.04's fd 8.3 package is older than Explorer's required
 8.4 minimum. Use `:checkhealth lazy`, and the feature guides' health checks, to
-inspect requirements on the current device.
+inspect requirements on the current device. Explorer's selected file/folder icons
+also need Nerd Fonts 3+ glyph support in the terminal, via a patched font or
+symbols fallback; see the [icon guide](icons.md). The current Kitty configuration
+uses an installed MonoLisa Nerd Font Mono.
+Python support also requires Python, Flake8, Node.js, and the Pyright server on
+the new device. `:Lazy install` installs only the nvim-lint adapter; follow
+the [Python dependency instructions](python.md#dependencies-and-installation).
 
 If a plugin does not appear in `:Lazy` at all, check the explicit imports in
-`lua/config/lazy.lua`. Only the seven selected feature specifications are imported;
+`lua/config/lazy.lua`. Only the eleven selected feature specifications are imported;
 putting another file in `lua/plugins/` does not activate it. Files in
 `lua/config/` likewise need to be required explicitly. Restart after changing
 imports because automatic configuration reloading is disabled.
