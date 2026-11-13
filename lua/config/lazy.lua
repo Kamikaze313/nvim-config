@@ -31,7 +31,8 @@ require("lazy").setup({
     { import = "plugins.which-key" }, -- Discover shortcuts in a popup after pausing.
     { import = "plugins.explorer" }, -- Project file sidebar with Snacks' bundled picker.
     { import = "plugins.icons" }, -- File/folder icons, loaded as a Snacks dependency.
-    { import = "plugins.everforest" }, -- Optional palette in the two-choice theme menu.
+    { import = "plugins.everforest" }, -- Everforest palette in the theme menu.
+    { import = "plugins.ayu" }, -- Ayu with its Dark, Light, and Mirage variants.
     { import = "plugins.pairs" }, -- Matching brackets/quotes while typing in insert mode.
   },
 

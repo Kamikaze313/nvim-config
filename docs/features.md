@@ -4,7 +4,8 @@ Status: lazy.nvim is selected strictly as the plugin manager. Telescope with
 its required plenary dependency is selected for search, Oil for directory editing,
 Gitsigns for Git change markers and hunk actions, which-key for shortcut hints,
 and Snacks Explorer for a project sidebar with its required bundled picker.
-Default and Everforest are selected for theme switching; fonts use Kitty's existing chooser.
+Default, Everforest, and Ayu (including Dark, Light, and Mirage) are selected
+for theme switching; fonts use Kitty's existing chooser.
 A native bottom terminal is selected on `Ctrl-/` in normal mode and terminal input;
 `Esc Esc` enters terminal normal mode. No new plugin is required.
 Requested quit-command display cleanup clears retained :q text after a successful close.
@@ -17,6 +18,9 @@ Python support is selected: Flake8 via nvim-lint and Pyright via native Neovim
 LSP, with inline diagnostics, basic type checks, navigation, and environment lookup.
 blink.cmp is selected for automatic completion with LSP/path/buffer sources,
 documentation, and a session-wide Space c c toggle; no snippet pack is selected.
+Linux clipboard sharing is selected: ordinary yank/paste uses the desktop
+clipboard through native `unnamedplus`, with installed wl-clipboard on Wayland
+and xclip available for X11. [Usage guide](clipboard.md).
 Other optional features remain proposals and will be introduced one at a time for yes/no.
 Individual parts of a row can be selected separately.
 
@@ -42,9 +46,9 @@ the rebuild. See [the inventory](previous-setup.md) for the evidence and caveats
 | ID | The pitch | Possible implementation / requirements | Previous or suggested |
 | --- | --- | --- | --- |
 | 1 | **Make every edit comfortable.** Line numbers, readable search, predictable splits, and visible copied text. | Built-in settings and a yank-highlight autocommand; shortcuts and leader chosen explicitly. | Suggested foundation; old LazyVim also provided defaults. |
-| 2 | **Copy here, paste anywhere.** Share Neovim's clipboard with desktop apps. | Built-in `unnamedplus`; a working clipboard provider is required. | Previously explicit. |
+| 2 | **Copy here, paste anywhere.** Share Neovim's clipboard with desktop apps. | **Selected: built-in `unnamedplus`.** Uses installed wl-clipboard on Wayland; xclip is available for X11. Ordinary yank, delete, change, and paste use the desktop clipboard; no plugin or custom shortcut. [Usage guide](clipboard.md). | Previously explicit; selected now. |
 | 3 | **Indent your way.** Four-column real tabs for your 42 C work, with language-specific rules if wanted. | Built-in indentation settings; choose global or C-only behavior. | Previously global; format-on-save was disabled. |
-| 4 | **Choose your editor's colors.** Switch between the built-in Default theme and Everforest. | **Selected: Default + `neanias/everforest-nvim`.** `Space u c` / `:Theme` remembers the choice. Kitty's existing font chooser controls terminal fonts. [Usage guide](appearance.md). Statusline, tabs, and winbar remain unselected. | OneDark and winbar were explicit before the rebuild; Default/Everforest selected now. |
+| 4 | **Choose your editor's colors.** Switch between Default, Everforest, and Ayu's Dark/Light/Mirage palettes. | **Selected: Default + `neanias/everforest-nvim` + `Shatur/neovim-ayu`.** Neither theme plugin needs helper plugins or special fonts. `Space u c` / `:Theme` remembers the choice. Kitty's existing font chooser controls terminal fonts. [Usage guide](appearance.md). Statusline, tabs, and winbar remain unselected. | OneDark and winbar were explicit before the rebuild; Default/Everforest/Ayu selected now. |
 | 5 | **Find anything in seconds.** Search filenames, project text, open buffers, and recent files. | **Selected: Telescope + plenary.** Uses installed ripgrep and fd. [Usage guide](telescope.md). | Telescope was explicit in the old setup. |
 | 6 | **Manage folders using Vim editing.** Browse, create, rename, move, and delete files in an editable directory view. | **Selected: Oil.nvim.** No required plugin dependencies. [Usage guide](oil.md). | New selection for this rebuild. |
 | 7 | **An editor that understands C/C++.** Jump to definitions, inspect types, rename symbols, and see errors while coding. | Native LSP plus clangd; optional `nvim-lspconfig` and Mason for setup/tool management. | clangd extra explicitly enabled. |
@@ -78,7 +82,8 @@ basics in row 1 have not been selected.
 | Back up previous configuration | Complete; archive verified byte-for-byte. |
 | Create documented plain-Neovim foundation | Complete. |
 | Choose plugin manager | lazy.nvim selected as manager only; no distribution imports. Missing plugins need an explicit `:Lazy install` on each new device; see [setup instructions](plugin-manager.md#on-a-new-device). |
-| Themes and font controls (row 4) | Default/Everforest menu selected with persistence and true-color rendering. Fonts use the existing Kitty chooser; no terminal font is changed automatically. |
+| Linux clipboard sharing (row 2) | Requested integration in both directions: native `unnamedplus` connects ordinary yank/paste to desktop apps, using wl-copy/wl-paste on Wayland or xclip/xsel on X11. Required wl-clipboard and X11 fallback xclip are already installed. [Usage guide](clipboard.md). |
+| Themes and font controls (row 4) | Default/Everforest/Ayu menu selected with persistence and true-color rendering. Ayu offers background-following, Dark, Light, and Mirage choices through one plugin. Fonts use the existing Kitty chooser; no terminal font is changed automatically. |
 | File and text search (row 5) | Telescope selected, with required plenary dependency and Space leader shortcuts. |
 | Automatic completion (part of row 8) | blink.cmp selected with LSP/path/buffer sources, automatic documentation, and a global session toggle on Space c c / :CompletionToggle. Uses the Lua matcher; no snippet pack, command-line completion, or terminal completion added. |
 | Directory editing (row 6) | Oil selected, with `-` to open a directory and confirmation before applying edits. |

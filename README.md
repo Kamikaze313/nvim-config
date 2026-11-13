@@ -16,7 +16,7 @@ before selection, then installed and documented after selection.
 - Gitsigns shows Git changes beside lines and provides hunk actions; it requires Git only.
 - Which-key shows available shortcuts after a 200 ms pause; no extra plugins or special font are required.
 - mini.pairs inserts matching brackets and quotes in insert mode, with no additional dependencies.
-- `Space u c` chooses Default or Everforest and remembers the selection; fonts are chosen in Kitty.
+- `Space u c` chooses Default, Everforest, or Ayu (including Dark, Light, and Mirage) and remembers the selection; fonts are chosen in Kitty.
 - `Ctrl-/` in normal mode or terminal input toggles a reusable bottom terminal; `Esc Esc` leaves terminal input.
 - Executed `:q` / `:quit` text clears after a successful window or tab close; failed-quit errors remain visible.
 - Space is the shortcut leader; Telescope loads only when invoked.
@@ -29,7 +29,8 @@ before selection, then installed and documented after selection.
 - mini.pairs sets up at startup so Telescope search prompts are excluded even on first use; command-line and terminal input are excluded.
 - Snacks sets up at startup; the sidebar opens on request, leaving directory buffers to Oil.
 - mini.icons loads before Snacks as its dependency and selects icons automatically by filename, extension, and folder.
-- RGB colors are enabled; other editing settings use Neovim defaults and automatic formatting is not configured.
+- RGB colors are enabled; automatic formatting is not configured.
+- Yank and paste share the Linux desktop clipboard automatically through `unnamedplus`; Wayland uses installed `wl-copy`/`wl-paste`, with `xclip` available for X11. See the [clipboard guide](docs/clipboard.md).
 - Plugin installation and update checks are manual; see [manager instructions](docs/plugin-manager.md).
 - Search dependencies `fd` and `rg` are installed in `~/.local/bin/` on this device; they are separate from the plugins.
 - The previous configuration is backed up; see [recovery instructions](docs/backup.md).
@@ -51,9 +52,9 @@ for dependencies and installation checks.
 | File | Purpose |
 | --- | --- |
 | `init.lua` | Startup entry point; loads editor modules, then the plugin manager. |
-| `lua/config/options.lua` | Space leader and true-color rendering. |
+| `lua/config/options.lua` | Space leader, true-color rendering, and desktop clipboard sharing. |
 | `lua/config/keymaps.lua` | General shortcuts, including the theme menu and bottom terminal. |
-| `lua/config/theme.lua` | Default/Everforest menu, command, and saved selection. |
+| `lua/config/theme.lua` | Default/Everforest/Ayu menu, command, and saved selection. |
 | `lua/config/terminal.lua` | Reusable native shell in a bottom split; loads on first toggle. |
 | `lua/config/autocmds.lua` | Clear retained quit-command text after a successful close. |
 | `lua/config/lazy.lua` | Manager bootstrap and documented minimal behavior. |
@@ -69,6 +70,7 @@ for dependencies and installation checks.
 | `lua/plugins/explorer.lua` | Project file sidebar, Space e toggle, and required bundled helpers. |
 | `lua/plugins/icons.lua` | Standalone icon provider, glyph style, and optional file/extension overrides. |
 | `lua/plugins/everforest.lua` | Everforest colorscheme, loaded only when selected. |
+| `lua/plugins/ayu.lua` | Ayu colorschemes and variants, loaded only when selected. |
 | `lua/plugins/pairs.lua` | Insert-mode bracket/quote pairing, loading behavior, and mode selection. |
 | `lazy-lock.json` | Generated version record for lazy.nvim and all selected plugins. |
 | `docs/plugin-manager.md` | Manager commands, dependencies, behavior, and disabling instructions. |
@@ -85,6 +87,7 @@ for dependencies and installation checks.
 | `docs/terminal.md` | Bottom terminal controls, shell lifecycle, dependencies, and disabling instructions. |
 | `docs/command-line.md` | Quit-command display cleanup, examples, and disabling instructions. |
 | `docs/pairs.md` | Bracket/quote controls, examples, limitations, and disabling instructions. |
+| `docs/clipboard.md` | Linux clipboard dependencies, yank/paste controls, examples, and disabling instructions. |
 | `docs/features.md` | Feature pitches, manager comparison, and selection status. |
 | `docs/previous-setup.md` | Reference for rebuilding previous features deliberately. |
 | `docs/backup.md` | Backup contents, verification, and recovery. |
@@ -121,7 +124,7 @@ Press these sequences in normal mode. `<leader>` means **Space**.
 | `gd` (Python with Pyright) | Go to definition; Ctrl-o returns. |
 | `-` | Open the current file's directory in Oil; inside Oil, go up one level. |
 | `Space e` | Toggle the left file tree at the current file's Git root, or working directory outside Git. |
-| `Space u c` | Choose Default or Everforest and remember it across restarts. |
+| `Space u c` | Choose Default, Everforest, or an Ayu variant and remember it across restarts. |
 | `Ctrl-/` | Toggle the bottom terminal; also works directly from terminal input. |
 | `]c` / `[c` | Next/previous Git hunk, including staged changes; native motions in diff windows. |
 | `Space h p` | Preview the Git hunk under the cursor. |
@@ -181,10 +184,13 @@ to preview the hunk. Move the cursor to close the popup. Use `Space h s` to
 stage it; on that staged hunk, use the same shortcut again to unstage it.
 See the [Gitsigns usage guide](docs/gitsigns.md) for signs, commands, and examples.
 
-To change colors, press **Space u c** (or run `:Theme`), enter **1** for Default
-or **2** for Everforest, and press **Enter**. **Esc** cancels. `:Theme default`
-and `:Theme everforest` apply and remember a choice directly. The first startup
-uses Default. For fonts, run `kitten choose-fonts` in a normal Kitty shell;
+To change colors, press **Space u c** (or run `:Theme`), enter **1** for Default,
+**2** for Everforest, **3** for Ayu (follow background), **4** for Ayu Dark,
+**5** for Ayu Light, or **6** for Ayu Mirage, and press **Enter**. **Esc** cancels.
+For example, `:Theme ayu-mirage` applies and remembers Mirage directly;
+`:Theme default` returns to Default. Ayu needs no extra plugins or special font.
+The first startup uses Default. For fonts, run `kitten choose-fonts` in a normal
+Kitty shell;
 the font belongs to the terminal and is independent of the Neovim theme.
 See the [appearance guide](docs/appearance.md).
 
@@ -205,6 +211,14 @@ To try automatic pairs, press **i** in an empty editing buffer and type
 character skips over the generated one. **Backspace** inside an empty pair
 deletes both, and **Esc** leaves insert mode. See the [pairing guide](docs/pairs.md)
 for Enter behavior and literal input.
+
+To copy to another app, open a file and press **yy** in normal mode, or select
+text with **v** and press **y**. Paste in the other app with **Ctrl-v** (usually
+**Ctrl-Shift-v** in a terminal). To copy into Neovim, copy in the other app and
+press **p** in normal mode or **Ctrl-r +** in insert mode. Deletes and changes
+also update the clipboard; use **"_dd** to delete a line while preserving it,
+or **P** in visual mode to replace a selection while preserving it. These are
+built-in controls. See the [clipboard guide](docs/clipboard.md).
 
 ## Startup check
 
