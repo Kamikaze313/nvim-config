@@ -5,20 +5,25 @@ before selection, then installed and documented after selection.
 
 ## Current state
 
-- Neovim 0.12.5 with lazy.nvim selected only as a plugin manager.
+- Neovim with LuaJIT and lazy.nvim selected only as a plugin manager.
 - Telescope provides file and text search, with plenary as its required helper.
 - Oil provides directory browsing and file operations, with no plugin dependencies.
 - Snacks Explorer provides a left file sidebar on `Space e`, using its bundled picker and installed fd/Git.
 - Gitsigns shows Git changes beside lines and provides hunk actions; it requires Git only.
 - Which-key shows available shortcuts after a 200 ms pause; no extra plugins or special font are required.
+- mini.pairs inserts matching brackets and quotes in insert mode, with no additional dependencies.
 - `Space u c` chooses Default or Everforest and remembers the selection; fonts are chosen in Kitty.
+- `Ctrl-/` in normal mode or terminal input toggles a reusable bottom terminal; `Esc Esc` leaves terminal input.
+- Executed `:q` / `:quit` text clears after a successful window or tab close; failed-quit errors remain visible.
 - Space is the shortcut leader; Telescope loads only when invoked.
 - Oil loads at startup to handle directory arguments such as `nvim .`.
 - Gitsigns loads when opening a file or running `:Gitsigns` and attaches to Git-tracked files.
 - Which-key loads just after startup and labels Find, Git hunks, and Appearance.
+- mini.pairs sets up at startup so Telescope search prompts are excluded even on first use; command-line and terminal input are excluded.
 - Snacks sets up at startup; the sidebar opens on request, leaving directory buffers to Oil.
 - RGB colors are enabled; other editing settings use Neovim defaults and automatic formatting is not configured.
 - Plugin installation and update checks are manual; see [manager instructions](docs/plugin-manager.md).
+- Search dependencies `fd` and `rg` are installed in `~/.local/bin/` on this device; they are separate from the plugins.
 - The previous configuration is backed up; see [recovery instructions](docs/backup.md).
 - Choose from the [feature menu](docs/features.md). The [previous setup inventory](docs/previous-setup.md)
   records what was configured, including features that were disabled.
@@ -26,15 +31,23 @@ before selection, then installed and documented after selection.
 Restart Neovim to use the new configuration. An already-running instance still
 has its old plugins and settings loaded.
 
+On a new device, copying this configuration does not copy plugin installations.
+Start Neovim, run `:Lazy install`, wait for it to finish, and restart Neovim.
+Automatic installation is disabled deliberately. Plugins live in
+`~/.local/share/nvim/lazy-selected/`; only the manager is bootstrapped automatically.
+See [new-device setup and troubleshooting](docs/plugin-manager.md#on-a-new-device)
+for dependencies and installation checks.
+
 ## Where configuration lives
 
 | File | Purpose |
 | --- | --- |
 | `init.lua` | Startup entry point; loads editor modules, then the plugin manager. |
 | `lua/config/options.lua` | Space leader and true-color rendering. |
-| `lua/config/keymaps.lua` | General shortcuts, including the theme menu. |
+| `lua/config/keymaps.lua` | General shortcuts, including the theme menu and bottom terminal. |
 | `lua/config/theme.lua` | Default/Everforest menu, command, and saved selection. |
-| `lua/config/autocmds.lua` | Selected automatic actions; currently empty. |
+| `lua/config/terminal.lua` | Reusable native shell in a bottom split; loads on first toggle. |
+| `lua/config/autocmds.lua` | Clear retained quit-command text after a successful close. |
 | `lua/config/lazy.lua` | Manager bootstrap and documented minimal behavior. |
 | `lua/plugins/telescope.lua` | Search plugin, dependency, and shortcuts. |
 | `lua/plugins/oil.lua` | Directory editor, confirmation behavior, and parent-directory shortcut. |
@@ -42,6 +55,7 @@ has its old plugins and settings loaded.
 | `lua/plugins/which-key.lua` | Shortcut hints, popup delay, group labels, and plain-text key labels. |
 | `lua/plugins/explorer.lua` | Project file sidebar, Space e toggle, and required bundled helpers. |
 | `lua/plugins/everforest.lua` | Everforest colorscheme, loaded only when selected. |
+| `lua/plugins/pairs.lua` | Insert-mode bracket/quote pairing, loading behavior, and mode selection. |
 | `lazy-lock.json` | Generated version record for lazy.nvim and all selected plugins. |
 | `docs/plugin-manager.md` | Manager commands, dependencies, behavior, and disabling instructions. |
 | `docs/telescope.md` | Brief search usage guide, controls, configuration, and removal. |
@@ -50,6 +64,9 @@ has its old plugins and settings loaded.
 | `docs/which-key.md` | Shortcut popup controls, examples, automatic behavior, and removal. |
 | `docs/explorer.md` | File-tree navigation, file operations, dependencies, and removal. |
 | `docs/appearance.md` | Theme switching, persistence, Kitty font chooser, and disabling instructions. |
+| `docs/terminal.md` | Bottom terminal controls, shell lifecycle, dependencies, and disabling instructions. |
+| `docs/command-line.md` | Quit-command display cleanup, examples, and disabling instructions. |
+| `docs/pairs.md` | Bracket/quote controls, examples, limitations, and disabling instructions. |
 | `docs/features.md` | Feature pitches, manager comparison, and selection status. |
 | `docs/previous-setup.md` | Reference for rebuilding previous features deliberately. |
 | `docs/backup.md` | Backup contents, verification, and recovery. |
@@ -82,6 +99,7 @@ Press these sequences in normal mode. `<leader>` means **Space**.
 | `-` | Open the current file's directory in Oil; inside Oil, go up one level. |
 | `Space e` | Toggle the left file tree at the current file's Git root, or working directory outside Git. |
 | `Space u c` | Choose Default or Everforest and remember it across restarts. |
+| `Ctrl-/` | Toggle the bottom terminal; also works directly from terminal input. |
 | `]c` / `[c` | Next/previous Git hunk, including staged changes; native motions in diff windows. |
 | `Space h p` | Preview the Git hunk under the cursor. |
 | `Space h s` | Stage the hunk, or unstage it when only staged changes are under the cursor. |
@@ -125,6 +143,24 @@ and `:Theme everforest` apply and remember a choice directly. The first startup
 uses Default. For fonts, run `kitten choose-fonts` in a normal Kitty shell;
 the font belongs to the terminal and is independent of the Neovim theme.
 See the [appearance guide](docs/appearance.md).
+
+To run a command beside your code, press **Ctrl-/** in normal mode. The terminal
+opens at the bottom, ready for typing; try `pwd`. Press **Ctrl-/** again to hide
+it directly from terminal input, then use the same shortcut to reopen the shell.
+Press **Esc Esc** quickly to enter normal mode while keeping the terminal visible;
+press **i** to resume shell input. `:BottomTerminal` provides the same toggle.
+See the [terminal guide](docs/terminal.md) for window navigation, shell exit,
+and terminal key encoding. Normal-mode `?` uses Neovim's backward search again.
+
+To close a split or tab, run **:q** and press Enter. After a successful close,
+the bottom command line clears automatically. An unsaved-file error remains
+visible if the close fails. See the [command-line guide](docs/command-line.md).
+
+To try automatic pairs, press **i** in an empty editing buffer and type
+`print("hello")`. Opening characters insert their match; typing the closing
+character skips over the generated one. **Backspace** inside an empty pair
+deletes both, and **Esc** leaves insert mode. See the [pairing guide](docs/pairs.md)
+for Enter behavior and literal input.
 
 ## Startup check
 

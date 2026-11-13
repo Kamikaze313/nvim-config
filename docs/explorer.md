@@ -76,15 +76,19 @@ closed by the operation, so save wanted edits before deleting through the tree.
 ## Dependencies and configuration
 
 The installed release is **folke/snacks.nvim v2.31.0**. It requires Neovim
-**0.9.4+**; this machine has 0.12.5. Explorer uses Snacks' bundled **picker**, tree, window/layout,
+**0.9.4+**; this machine has 0.12.0-dev. Explorer uses Snacks' bundled **picker**, tree, window/layout,
 input, rename, and file-operation helpers. These are modules in one plugin;
 no separate dependency plugins are installed.
 
-**fd 8.4+** is required for Explorer's search (installed: 10.5.0). **Git** supplies
+**fd 8.4+** is required for Explorer's search (installed: 10.3.0 in
+`~/.local/bin/`, already included in the shell's `PATH`). **Git** supplies
 repository status and is also used by lazy.nvim for installation. Ripgrep is
 already installed for Telescope and is used if you invoke the explorer's
 optional grep action. A supported system-trash command is optional; see deletion
 behavior above. No icon plugin or Nerd Font is required for this configuration.
+
+`fd` and `rg` are external dependencies, separate from downloaded plugins.
+Install them on each new device; see [new-device setup](plugin-manager.md#on-a-new-device).
 
 `lua/plugins/explorer.lua` owns the specification, explicitly imported by
 `lua/config/lazy.lua`. Its separate checkout is

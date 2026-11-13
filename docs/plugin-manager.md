@@ -9,12 +9,13 @@ choose individually. No LazyVim distribution or feature bundle is imported.
 The manager exposes `:Lazy` and manages installation, updates, version records,
 dependencies, and plugin loading. The `spec` table explicitly imports
 `plugins.telescope`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`,
-`plugins.explorer`, and `plugins.everforest`.
+`plugins.explorer`, `plugins.everforest`, and `plugins.pairs`.
 The manager currently lists itself, Telescope, Telescope's required helper plenary,
-Oil, Gitsigns, which-key, Snacks (Explorer with its bundled picker), and Everforest.
+Oil, Gitsigns, which-key, Snacks (Explorer with its bundled picker), Everforest,
+and the standalone mini.pairs plugin.
 See the [Telescope usage guide](telescope.md), [Oil usage guide](oil.md),
 [Gitsigns usage guide](gitsigns.md), [which-key usage guide](which-key.md), and
-[Explorer usage guide](explorer.md).
+[Explorer usage guide](explorer.md), and [pairing usage guide](pairs.md).
 Theme selection and terminal fonts are covered in the [appearance guide](appearance.md).
 
 Dependencies: Neovim with LuaJIT and Git. The existing manager checkout was
@@ -30,7 +31,7 @@ returns to the editor instead of exiting it.
 | `plugin_root` | `stdpath("data") .. "/lazy-selected"` | Directory for this rebuild's manager and selected plugins. |
 | `lazypath` | `plugin_root .. "/lazy.nvim"` | Load the manager's separate checkout, or bootstrap it there when absent. |
 | `rtp:prepend(lazypath)` | Manager directory first in the runtime path | Make its Lua module available. |
-| `spec` | Explicit imports of `plugins.telescope`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`, `plugins.explorer`, and `plugins.everforest` | Load only the selected feature specifications. |
+| `spec` | Explicit imports of `plugins.telescope`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`, `plugins.explorer`, `plugins.everforest`, and `plugins.pairs` | Load only the selected feature specifications. |
 | `root` | `stdpath("data") .. "/lazy-selected"` | Keep the rebuild's plugins separate from previous plugin installations. |
 | `local_spec` | `false` | Prevent project `.lazy.lua` files from extending the selected plugin list. |
 | `install.missing` | `false` | Install declared plugins explicitly, not during normal startup. |
@@ -55,6 +56,10 @@ handling directory buffers. Explorer uses bundled input/window/file-operation
 helpers on demand without replacing general input or selection dialogs.
 Everforest loads on `:colorscheme everforest`, including when `:Theme` applies
 it or the saved theme is restored at startup. Default is built into Neovim.
+mini.pairs sets up at startup and creates its upstream insert-mode
+pair/Backspace/Enter mappings. Early setup lets its upstream Telescope prompt
+exclusion work even when search is used first. Command-line and terminal pairing
+are disabled.
 
 The manager itself does not configure editing shortcuts, a theme, completion, language
 servers, a dashboard, or formatting. No custom keymap opens its interface; use
@@ -85,6 +90,43 @@ Adding a feature means documenting its specification and dependencies, installin
 it explicitly, and recording its version in `lazy-lock.json`. A lockfile records
 versions for restore; it does not force the checkout to that version on every
 startup. Keep it in Git; do not edit its generated contents by hand.
+
+## On a new device
+
+The configuration and lockfile do not include downloaded plugins. The bootstrap
+installs lazy.nvim itself, but `install.missing = false` leaves the feature
+plugins uninstalled until requested. Errors such as `Plugin oil.nvim is not
+installed` or `Plugin snacks.nvim is not installed` can therefore appear on the
+first startup even when the manager is working.
+
+1. Ensure Neovim with LuaJIT, Git, and access to GitHub are available.
+2. Start `nvim`, run `:Lazy install`, and wait for installation to finish.
+   Open `:Lazy` to inspect any failed download; press `q` to close the window.
+3. Run `:Lazy restore` if you want to match the versions in the copied lockfile.
+4. Restart Neovim so startup-loaded plugins such as Oil and Snacks initialize.
+5. Press `Space f f`, type `init`, and press Enter to open `init.lua` from this
+   configuration directory. `Ctrl-c` closes a Telescope picker in insert mode.
+   Press `-` to open Oil and `Ctrl-c` in normal mode to close it.
+
+The install directory is `stdpath("data") .. "/lazy-selected"`, normally
+`~/.local/share/nvim/lazy-selected/`. Existing plugins in the separate `lazy/`
+directory do not count as installed for this configuration. Preserve that old
+directory and `.backups/`.
+
+External search tools must also be installed on the new device: `rg` (ripgrep)
+for Telescope's text search, and `fd` or `fdfind` version 8.4+ for Explorer's
+search. Their availability on the previous device does not transfer with this
+repository. On this device, fd 10.3.0 and ripgrep 14.1.1 were installed from
+their official Linux releases into `~/.local/bin/`, already included in the
+shell's `PATH`. Ubuntu 22.04's fd 8.3 package is older than Explorer's required
+8.4 minimum. Use `:checkhealth lazy`, and the feature guides' health checks, to
+inspect requirements on the current device.
+
+If a plugin does not appear in `:Lazy` at all, check the explicit imports in
+`lua/config/lazy.lua`. Only the seven selected feature specifications are imported;
+putting another file in `lua/plugins/` does not activate it. Files in
+`lua/config/` likewise need to be required explicitly. Restart after changing
+imports because automatic configuration reloading is disabled.
 
 ## Disable or remove
 

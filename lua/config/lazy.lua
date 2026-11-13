@@ -28,6 +28,7 @@ require("lazy").setup({
     { import = "plugins.which-key" }, -- Discover shortcuts in a popup after pausing.
     { import = "plugins.explorer" }, -- Project file sidebar with Snacks' bundled picker.
     { import = "plugins.everforest" }, -- Optional palette in the two-choice theme menu.
+    { import = "plugins.pairs" }, -- Matching brackets/quotes while typing in insert mode.
   },
 
   -- Keep new plugins separate so manager cleanup cannot remove the old setup's plugins.

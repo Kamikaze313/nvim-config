@@ -55,8 +55,11 @@ on-demand loading has not been triggered by a shortcut yet.
   `lazy-lock.json` records the exact installed commit.
 - `nvim-lua/plenary.nvim`, the required Lua helper library for Telescope's jobs
   and utilities. It has no separate user workflow or custom settings here.
-- The existing `rg` (ripgrep) executable supplies project text search, and
-  `fd` is available for file finding. No additional external tool was installed.
+- `rg` (ripgrep) supplies project text search, and `fd` is available for file
+  finding. On this device, ripgrep 14.1.1 and fd 10.3.0 are installed in
+  `~/.local/bin/`, which the existing shell configuration includes in `PATH`.
+  These executables are separate dependencies and must be installed again on
+  another device; copying the Neovim configuration does not transfer them.
 
 `lua/plugins/telescope.lua` contains the specification. Its `cmd = "Telescope"`
 and five `keys` entries make the feature load on first use. `dependencies`
