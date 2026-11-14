@@ -21,6 +21,8 @@ documentation, and a session-wide Space c c toggle; no snippet pack is selected.
 Linux clipboard sharing is selected: ordinary yank/paste uses the desktop
 clipboard through native `unnamedplus`, with installed wl-clipboard on Wayland
 and xclip available for X11. [Usage guide](clipboard.md).
+nvim-treesitter is selected for Python/Lua highlighting, with manually installed
+parsers and a separate parser/query directory; folding and text objects remain optional.
 Other optional features remain proposals and will be introduced one at a time for yes/no.
 Individual parts of a row can be selected separately.
 
@@ -53,7 +55,7 @@ the rebuild. See [the inventory](previous-setup.md) for the evidence and caveats
 | 6 | **Manage folders using Vim editing.** Browse, create, rename, move, and delete files in an editable directory view. | **Selected: Oil.nvim.** No required plugin dependencies. [Usage guide](oil.md). | New selection for this rebuild. |
 | 7 | **An editor that understands C/C++.** Jump to definitions, inspect types, rename symbols, and see errors while coding. | Native LSP plus clangd; optional `nvim-lspconfig` and Mason for setup/tool management. | clangd extra explicitly enabled. |
 | 8 | **Type less, finish faster.** Completion menus and reusable snippets. | **Selected: blink.cmp**, with LSP/path/buffer suggestions, documentation, Lua matching, and Space c c to enable/disable. [Usage guide](completion.md). Snippet packs remain unselected. | Both in old lockfile; Blink selected now. |
-| 9 | **Read code by its structure.** Rich highlighting and precise selections of functions or arguments. | Treesitter and optional text objects; selected parsers may require a compiler. | Both in old lockfile. |
+| 9 | **Read code by its structure.** Rich highlighting and precise selections of functions or arguments. | **Selected: nvim-treesitter highlighting for Python and Lua.** Requires Neovim 0.12+, Tree-sitter CLI 0.26.1+, a C compiler, curl, tar, and language parsers. [Usage guide](treesitter.md). Text objects and structural folding remain unselected. | Both in old lockfile; highlighting selected now. |
 | 10 | **Your 42 header, instantly.** Insert and maintain your school header with one command. | `42paris/42header`; reuse the identity saved in the backup if selected. | Explicit; old shortcut was `<leader>hdr`, plus the plugin's F1 default. |
 | 11 | **Catch Norm errors early.** Show 42 style violations while you work. | Norminette integration plus the external `norminette` command; choose manual or save-time checks. | Previously configured, but disabled before the backup. |
 | 12 | **Watch your program think.** Breakpoints, stepping, variables, and a debugger panel for C/C++. | `nvim-dap`, UI, virtual text, required UI dependencies, and CodeLLDB. | Explicitly configured; rebuilt setup will need adapter validation. |
@@ -86,6 +88,7 @@ basics in row 1 have not been selected.
 | Themes and font controls (row 4) | Default/Everforest/Ayu menu selected with persistence and true-color rendering. Ayu offers background-following, Dark, Light, and Mirage choices through one plugin. Fonts use the existing Kitty chooser; no terminal font is changed automatically. |
 | File and text search (row 5) | Telescope selected, with required plenary dependency and Space leader shortcuts. |
 | Automatic completion (part of row 8) | blink.cmp selected with LSP/path/buffer sources, automatic documentation, and a global session toggle on Space c c / :CompletionToggle. Uses the Lua matcher; no snippet pack, command-line completion, or terminal completion added. |
+| Structural highlighting (part of row 9) | nvim-treesitter selected for Python and Lua, starting automatically in source buffers. Parsers/queries live in `treesitter-selected`, separate from previous installations. CLI and parsers installed explicitly; no new keymaps, folding, indentation engine, or text-object plugin. |
 | Directory editing (row 6) | Oil selected, with `-` to open a directory and confirmation before applying edits. |
 | Git change markers and hunk actions (row 13) | Gitsigns selected, with automatic signs and buffer-local navigation, preview, stage/reset, and blame shortcuts. LazyGit remains unselected. |
 | Shortcut discovery (row 14) | which-key selected, with a 200 ms popup delay, Find/Git hunk group labels, and plain-text key labels. No extra plugins or action shortcuts. |

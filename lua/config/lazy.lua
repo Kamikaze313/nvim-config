@@ -26,6 +26,7 @@ require("lazy").setup({
     { import = "plugins.replace" }, -- Visual find/replace in a file or project.
     { import = "plugins.lint" }, -- Flake8 diagnostics for Python through nvim-lint.
     { import = "plugins.completion" }, -- Automatic suggestions and session-wide toggle.
+    { import = "plugins.treesitter" }, -- Syntax-aware highlighting for Python and Lua.
     { import = "plugins.oil" }, -- Browse directories and edit file names as a buffer.
     { import = "plugins.gitsigns" }, -- Git change markers and per-hunk actions.
     { import = "plugins.which-key" }, -- Discover shortcuts in a popup after pausing.

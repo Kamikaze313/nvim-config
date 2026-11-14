@@ -10,6 +10,7 @@ before selection, then installed and documented after selection.
 - grug-far provides visual find/replace on `Space s r` (current file) and `Space s R` (project), using installed ripgrep.
 - Python uses Pyright through native LSP for type checks/navigation, plus Flake8 through nvim-lint for code/style diagnostics.
 - blink.cmp offers automatic LSP, path, and buffer-word suggestions with documentation; `Space c c` toggles completion for the session.
+- nvim-treesitter adds structure-aware highlighting for Python and Lua, using their compiled language parsers.
 - Oil provides directory browsing and file operations, with no plugin dependencies.
 - Snacks Explorer provides a left file sidebar on `Space e`, using its bundled picker and installed fd/Git.
 - mini.icons supplies Explorer's file/folder icons and grug-far's result file icons; Nerd Fonts 3+ glyph support is required (already configured in Kitty).
@@ -26,6 +27,7 @@ before selection, then installed and documented after selection.
 - grug-far loads on request, starts with literal matching, and previews changes before the Replace action writes files.
 - Pyright starts for Python buffers and checks while editing; Flake8 checks on buffer entry/save or `Space c l`. Diagnostics appear beside the code.
 - Blink sets up at startup using its Lua matcher, without additional plugins or native binary downloads; command-line and terminal completion remain unchanged.
+- Tree-sitter loads at startup and enables highlighting when opening Python/Lua source buffers; parser downloads are explicit, with no network access during ordinary editing.
 - mini.pairs sets up at startup so Telescope search prompts are excluded even on first use; command-line and terminal input are excluded.
 - Snacks sets up at startup; the sidebar opens on request, leaving directory buffers to Oil.
 - mini.icons loads before Snacks as its dependency and selects icons automatically by filename, extension, and folder.
@@ -64,6 +66,7 @@ for dependencies and installation checks.
 | `lua/plugins/replace.lua` | Visual replacement form, current-file/project scope, literal defaults, and shortcuts. |
 | `lua/plugins/lint.lua` | Python Flake8 adapter, automatic/manual checks, and severity handling. |
 | `lua/plugins/completion.lua` | Blink suggestions, documentation, sources, Lua matcher, and enable/disable toggle. |
+| `lua/plugins/treesitter.lua` | Python/Lua highlighting, separate parser directory, and explicit parser update hook. |
 | `lua/plugins/oil.lua` | Directory editor, confirmation behavior, and parent-directory shortcut. |
 | `lua/plugins/gitsigns.lua` | Git change markers, loading behavior, and buffer-local hunk shortcuts. |
 | `lua/plugins/which-key.lua` | Shortcut hints, popup delay, group labels, and plain-text key labels. |
@@ -78,6 +81,7 @@ for dependencies and installation checks.
 | `docs/replace.md` | Visual search/replace controls, examples, disk-write behavior, customization, and removal. |
 | `docs/python.md` | Python/Pyright/Flake8 installation, environments, diagnostics, controls, and disabling. |
 | `docs/completion.md` | Completion controls, practical example, session toggle, customization, and removal. |
+| `docs/treesitter.md` | Highlighting example, parser/CLI dependencies, inspection commands, installation, and disabling. |
 | `docs/oil.md` | Directory navigation, file editing, confirmation, and removal. |
 | `docs/gitsigns.md` | Git signs, hunk navigation/actions, blame, dependencies, and removal. |
 | `docs/which-key.md` | Shortcut popup controls, examples, automatic behavior, and removal. |
@@ -146,6 +150,12 @@ line. Use **Ctrl-n / Ctrl-p** or arrow keys to select a suggestion, **Ctrl-y** t
 accept, and **Ctrl-e** to dismiss. Documentation appears after selection.
 Press **Esc**, then **Space c c** to switch completion off or back on; restarting
 Neovim enables it again. See the [completion guide](docs/completion.md).
+
+Tree-sitter highlighting starts automatically when opening a `.py` or `.lua`
+file. For example, open `init.lua`, move onto `require`, and run **:Inspect**
+to see the highlight groups under the cursor; press Enter if prompted to continue.
+There are no new shortcuts or panels to manage. See the [Tree-sitter guide](docs/treesitter.md)
+for inspection, temporary disabling, and new-device parser installation.
 
 To discover shortcuts, press **Space** in normal mode and pause briefly. Press
 **f** to see the Find group, then **f** again to open Telescope's file picker.

@@ -8,6 +8,7 @@
   "mini.pairs": { "branch": "main", "commit": "4a014143fcb4e9df26198ccb3ecff3b9e77a048c" },
   "neovim-ayu": { "branch": "master", "commit": "e5a9f0fa2918d6b5f57c21b3ac014314ee5e41c8" },
   "nvim-lint": { "branch": "master", "commit": "52107ce2076a27a285af781248e2c59bad817cd0" },
+  "nvim-treesitter": { "branch": "main", "commit": "60c0f468de3e636fa660a419d537e8033aca4e39" },
   "oil.nvim": { "branch": "master", "commit": "17c0a8faaf48298a0c0cfb0d757c0eaee4ff7a32" },
   "plenary.nvim": { "branch": "master", "commit": "74b06c6c75e4eeb3108ec01852001636d85a932b" },
   "snacks.nvim": { "branch": "main", "commit": "e6fd58c82f2f3fcddd3fe81703d47d6d48fc7b9f" },

@@ -8,12 +8,12 @@ choose individually. No LazyVim distribution or feature bundle is imported.
 `init.lua` loads `lua/config/lazy.lua` after the editor configuration modules.
 The manager exposes `:Lazy` and manages installation, updates, version records,
 dependencies, and plugin loading. The `spec` table explicitly imports
-`plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`,
+`plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`, `plugins.treesitter`,
 `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`,
 `plugins.explorer`, `plugins.icons`, `plugins.everforest`, `plugins.ayu`, and `plugins.pairs`.
 The manager currently lists itself, Telescope, Telescope's required helper plenary,
 Oil, Gitsigns, which-key, Snacks (Explorer with its bundled picker), Everforest, Ayu,
-grug-far, nvim-lint, blink.cmp, and the standalone mini.pairs and mini.icons plugins.
+grug-far, nvim-lint, blink.cmp, nvim-treesitter, and the standalone mini.pairs and mini.icons plugins.
 See the [Telescope usage guide](telescope.md), [Oil usage guide](oil.md),
 [Gitsigns usage guide](gitsigns.md), [which-key usage guide](which-key.md), and
 [Explorer usage guide](explorer.md), [icon guide](icons.md), and [pairing usage guide](pairs.md).
@@ -21,6 +21,7 @@ Theme selection and terminal fonts are covered in the [appearance guide](appeara
 Visual find/replace is covered in the [replacement guide](replace.md).
 Python's Flake8 and native Pyright setup is covered in the [Python guide](python.md).
 Automatic completion and its session toggle are covered in the [completion guide](completion.md).
+Python/Lua syntax highlighting and parser installation are covered in the [Tree-sitter guide](treesitter.md).
 
 Dependencies: Neovim with LuaJIT and Git. The existing manager checkout was
 copied into the new plugin directory; no download was needed. On a fresh machine,
@@ -35,7 +36,7 @@ returns to the editor instead of exiting it.
 | `plugin_root` | `stdpath("data") .. "/lazy-selected"` | Directory for this rebuild's manager and selected plugins. |
 | `lazypath` | `plugin_root .. "/lazy.nvim"` | Load the manager's separate checkout, or bootstrap it there when absent. |
 | `rtp:prepend(lazypath)` | Manager directory first in the runtime path | Make its Lua module available. |
-| `spec` | Explicit imports of `plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`, `plugins.explorer`, `plugins.icons`, `plugins.everforest`, `plugins.ayu`, and `plugins.pairs` | Load only the selected feature specifications. |
+| `spec` | Explicit imports of `plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`, `plugins.treesitter`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`, `plugins.explorer`, `plugins.icons`, `plugins.everforest`, `plugins.ayu`, and `plugins.pairs` | Load only the selected feature specifications. |
 | `root` | `stdpath("data") .. "/lazy-selected"` | Keep the rebuild's plugins separate from previous plugin installations. |
 | `local_spec` | `false` | Prevent project `.lazy.lua` files from extending the selected plugin list. |
 | `install.missing` | `false` | Install declared plugins explicitly, not during normal startup. |
@@ -78,6 +79,13 @@ Blink initializes at startup before native LSP clients start, so its upstream
 plugin can advertise completion capabilities through `vim.lsp.config('*', ...)`.
 Its bundled Lua matcher and LSP/path/buffer sources require no helper plugins,
 native binary downloads, or Rust compiler. Space c c toggles it for the session.
+Tree-sitter loads at startup as required upstream. A FileType autocmd starts
+native highlighting for Python/Lua source buffers. Its build hook runs
+`:TSUpdate python lua` during explicit plugin installation/updates, updating only
+already-installed selected parsers. First-time installation uses
+`:TSInstall python lua`; wait for completion before restarting. No parsers are
+downloaded at ordinary startup or when opening files. Parsers and queries are
+stored in `~/.local/share/nvim/treesitter-selected/`, preserving the old site data.
 
 The manager itself does not configure editing shortcuts, a theme, completion, language
 servers, a dashboard, or formatting. No custom keymap opens its interface; use
@@ -145,9 +153,14 @@ uses an installed MonoLisa Nerd Font Mono.
 Python support also requires Python, Flake8, Node.js, and the Pyright server on
 the new device. `:Lazy install` installs only the nvim-lint adapter; follow
 the [Python dependency instructions](python.md#dependencies-and-installation).
+Tree-sitter additionally requires Neovim 0.12+, a C compiler, curl, tar, and
+Tree-sitter CLI 0.26.1+ in PATH. After installing the plugin, run
+`:TSInstall python lua`, wait for both installations to finish, and restart.
+See the [Tree-sitter dependency instructions](treesitter.md#dependencies-and-installation),
+including the CLI build needed on this Ubuntu 22.04 system.
 
 If a plugin does not appear in `:Lazy` at all, check the explicit imports in
-`lua/config/lazy.lua`. Only the twelve selected feature specifications are imported;
+`lua/config/lazy.lua`. Only the thirteen selected feature specifications are imported;
 putting another file in `lua/plugins/` does not activate it. Files in
 `lua/config/` likewise need to be required explicitly. Restart after changing
 imports because automatic configuration reloading is disabled.
