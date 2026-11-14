@@ -17,7 +17,7 @@ before selection, then installed and documented after selection.
 - Gitsigns shows Git changes beside lines and provides hunk actions; it requires Git only.
 - Which-key shows available shortcuts after a 200 ms pause; no extra plugins or special font are required.
 - mini.pairs inserts matching brackets and quotes in insert mode, with no additional dependencies.
-- `Space u c` chooses Default, Everforest, Ayu (including Dark, Light, and Mirage), or Vague and remembers the selection; fonts are chosen in Kitty.
+- `Space u c` chooses Default, Everforest, Ayu (including Dark, Light, and Mirage), Vague, or Embark and remembers the selection; fonts are chosen in Kitty.
 - `Ctrl-/` in normal mode or terminal input toggles a reusable bottom terminal; `Esc Esc` leaves terminal input.
 - Executed `:q` / `:quit` text clears after a successful window or tab close; failed-quit errors remain visible.
 - Space is the shortcut leader; Telescope loads only when invoked.
@@ -56,7 +56,7 @@ for dependencies and installation checks.
 | `init.lua` | Startup entry point; loads editor modules, then the plugin manager. |
 | `lua/config/options.lua` | Space leader, true-color rendering, and desktop clipboard sharing. |
 | `lua/config/keymaps.lua` | General shortcuts, including the theme menu and bottom terminal. |
-| `lua/config/theme.lua` | Default/Everforest/Ayu/Vague menu, command, and saved selection. |
+| `lua/config/theme.lua` | Default/Everforest/Ayu/Vague/Embark menu, command, and saved selection. |
 | `lua/config/terminal.lua` | Reusable native shell in a bottom split; loads on first toggle. |
 | `lua/config/autocmds.lua` | Clear retained quit-command text after a successful close. |
 | `lua/config/lazy.lua` | Manager bootstrap and documented minimal behavior. |
@@ -75,6 +75,7 @@ for dependencies and installation checks.
 | `lua/plugins/everforest.lua` | Everforest colorscheme, loaded only when selected. |
 | `lua/plugins/ayu.lua` | Ayu colorschemes and variants, loaded only when selected. |
 | `lua/plugins/vague.lua` | Vague's muted dark colorscheme, loaded only when selected. |
+| `lua/plugins/embark.lua` | Embark's deep purple colorscheme, loaded only when selected. |
 | `lua/plugins/pairs.lua` | Insert-mode bracket/quote pairing, loading behavior, and mode selection. |
 | `lazy-lock.json` | Generated version record for lazy.nvim and all selected plugins. |
 | `docs/plugin-manager.md` | Manager commands, dependencies, behavior, and disabling instructions. |
@@ -129,7 +130,7 @@ Press these sequences in normal mode. `<leader>` means **Space**.
 | `gd` (Python with Pyright) | Go to definition; Ctrl-o returns. |
 | `-` | Open the current file's directory in Oil; inside Oil, go up one level. |
 | `Space e` | Toggle the left file tree at the current file's Git root, or working directory outside Git. |
-| `Space u c` | Choose Default, Everforest, an Ayu variant, or Vague and remember it across restarts. |
+| `Space u c` | Choose Default, Everforest, an Ayu variant, Vague, or Embark and remember it across restarts. |
 | `Ctrl-/` | Toggle the bottom terminal; also works directly from terminal input. |
 | `]c` / `[c` | Next/previous Git hunk, including staged changes; native motions in diff windows. |
 | `Space h p` | Preview the Git hunk under the cursor. |
@@ -197,10 +198,12 @@ See the [Gitsigns usage guide](docs/gitsigns.md) for signs, commands, and exampl
 
 To change colors, press **Space u c** (or run `:Theme`), enter **1** for Default,
 **2** for Everforest, **3** for Ayu (follow background), **4** for Ayu Dark,
-**5** for Ayu Light, **6** for Ayu Mirage, or **7** for Vague, and press **Enter**.
-**Esc** cancels. For example, open `init.lua` and run `:Theme vague` to apply and
-remember Vague's muted dark palette; `:Theme default` returns to Default.
-Ayu and Vague need no extra plugins or special font.
+**5** for Ayu Light, **6** for Ayu Mirage, **7** for Vague, or **8** for Embark,
+and press **Enter**. The menu closes after selection; **Esc** cancels.
+For example, open `init.lua` and run `:Theme embark` to apply and remember
+Embark's deep purple palette; `:Theme default` returns to Default.
+Ayu, Vague, and Embark need no extra plugins or special font. Embark requires
+true-color support, already provided by Kitty and the `termguicolors` setting.
 The first startup uses Default. For fonts, run `kitten choose-fonts` in a normal
 Kitty shell;
 the font belongs to the terminal and is independent of the Neovim theme.
