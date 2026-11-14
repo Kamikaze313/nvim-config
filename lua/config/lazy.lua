@@ -34,6 +34,7 @@ require("lazy").setup({
     { import = "plugins.icons" }, -- File/folder icons, loaded as a Snacks dependency.
     { import = "plugins.everforest" }, -- Everforest palette in the theme menu.
     { import = "plugins.ayu" }, -- Ayu with its Dark, Light, and Mirage variants.
+    { import = "plugins.vague" }, -- Vague's muted dark palette in the theme menu.
     { import = "plugins.pairs" }, -- Matching brackets/quotes while typing in insert mode.
   },
 

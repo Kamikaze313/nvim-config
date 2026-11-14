@@ -10,9 +10,9 @@ The manager exposes `:Lazy` and manages installation, updates, version records,
 dependencies, and plugin loading. The `spec` table explicitly imports
 `plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`, `plugins.treesitter`,
 `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`,
-`plugins.explorer`, `plugins.icons`, `plugins.everforest`, `plugins.ayu`, and `plugins.pairs`.
+`plugins.explorer`, `plugins.icons`, `plugins.everforest`, `plugins.ayu`, `plugins.vague`, and `plugins.pairs`.
 The manager currently lists itself, Telescope, Telescope's required helper plenary,
-Oil, Gitsigns, which-key, Snacks (Explorer with its bundled picker), Everforest, Ayu,
+Oil, Gitsigns, which-key, Snacks (Explorer with its bundled picker), Everforest, Ayu, Vague,
 grug-far, nvim-lint, blink.cmp, nvim-treesitter, and the standalone mini.pairs and mini.icons plugins.
 See the [Telescope usage guide](telescope.md), [Oil usage guide](oil.md),
 [Gitsigns usage guide](gitsigns.md), [which-key usage guide](which-key.md), and
@@ -36,7 +36,7 @@ returns to the editor instead of exiting it.
 | `plugin_root` | `stdpath("data") .. "/lazy-selected"` | Directory for this rebuild's manager and selected plugins. |
 | `lazypath` | `plugin_root .. "/lazy.nvim"` | Load the manager's separate checkout, or bootstrap it there when absent. |
 | `rtp:prepend(lazypath)` | Manager directory first in the runtime path | Make its Lua module available. |
-| `spec` | Explicit imports of `plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`, `plugins.treesitter`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`, `plugins.explorer`, `plugins.icons`, `plugins.everforest`, `plugins.ayu`, and `plugins.pairs` | Load only the selected feature specifications. |
+| `spec` | Explicit imports of `plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`, `plugins.treesitter`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`, `plugins.explorer`, `plugins.icons`, `plugins.everforest`, `plugins.ayu`, `plugins.vague`, and `plugins.pairs` | Load only the selected feature specifications. |
 | `root` | `stdpath("data") .. "/lazy-selected"` | Keep the rebuild's plugins separate from previous plugin installations. |
 | `local_spec` | `false` | Prevent project `.lazy.lua` files from extending the selected plugin list. |
 | `install.missing` | `false` | Install declared plugins explicitly, not during normal startup. |
@@ -62,8 +62,9 @@ helpers on demand without replacing general input or selection dialogs.
 The standalone mini.icons provider loads before Snacks as its explicit dependency
 and supplies Explorer's file/folder icons. It does not import other mini modules.
 Everforest loads on `:colorscheme everforest`; Ayu loads on `:colorscheme ayu`,
-`ayu-dark`, `ayu-light`, or `ayu-mirage`. This includes when `:Theme` applies
-them or the saved theme is restored at startup. Default is built into Neovim.
+`ayu-dark`, `ayu-light`, or `ayu-mirage`; Vague loads on `:colorscheme vague`.
+This includes when `:Theme` applies them or the saved theme is restored at startup.
+Default is built into Neovim.
 mini.pairs sets up at startup and creates its upstream insert-mode
 pair/Backspace/Enter mappings. Early setup lets its upstream Telescope prompt
 exclusion work even when search is used first. Command-line and terminal pairing
@@ -160,7 +161,7 @@ See the [Tree-sitter dependency instructions](treesitter.md#dependencies-and-ins
 including the CLI build needed on this Ubuntu 22.04 system.
 
 If a plugin does not appear in `:Lazy` at all, check the explicit imports in
-`lua/config/lazy.lua`. Only the thirteen selected feature specifications are imported;
+`lua/config/lazy.lua`. Only explicitly selected feature specifications are imported;
 putting another file in `lua/plugins/` does not activate it. Files in
 `lua/config/` likewise need to be required explicitly. Restart after changing
 imports because automatic configuration reloading is disabled.

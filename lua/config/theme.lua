@@ -3,7 +3,7 @@
 local M = {}
 
 -- Keep the menu limited to the themes explicitly selected by the user.
-local themes = { "default", "everforest", "ayu", "ayu-dark", "ayu-light", "ayu-mirage" }
+local themes = { "default", "everforest", "ayu", "ayu-dark", "ayu-light", "ayu-mirage", "vague" }
 -- Label each colorscheme clearly; plain Ayu follows Neovim's background preference.
 local labels = {
   default = "Default (Neovim)",
@@ -12,11 +12,12 @@ local labels = {
   ["ayu-dark"] = "Ayu Dark",
   ["ayu-light"] = "Ayu Light",
   ["ayu-mirage"] = "Ayu Mirage",
+  vague = "Vague",
 }
 -- Store personal selection in editor state, separate from configuration and backups.
 local state_file = vim.fn.stdpath("state") .. "/selected-theme.txt"
--- Everforest and Ayu set embedded-terminal colors. Remember the original palette
--- so returning to Default restores new terminal buffers as well as editor text.
+-- Everforest, Ayu, and Vague set embedded-terminal colors. Remember the original
+-- palette so returning to Default restores new terminal buffers as well as editor text.
 local terminal_colors = {}
 -- Ayu also supplies background/foreground globals; restore those alongside ANSI colors.
 local terminal_color_names = { "background", "foreground" }

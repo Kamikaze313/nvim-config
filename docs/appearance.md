@@ -3,11 +3,11 @@
 Neovim's colorscheme controls code, editor backgrounds, and plugin highlights.
 When Neovim runs in a terminal, the terminal controls the font family, size,
 ligatures, and font rendering. A colorscheme does not install or select a font.
-Everforest and Ayu work with the current font or any other monospaced font you choose.
+Everforest, Ayu, and Vague work with the current font or any other monospaced font you choose.
 
 This environment identifies Kitty. Its configuration is
 `~/.config/kitty/kitty.conf`, separate from this Neovim repository. Kitty also
-has its own terminal color theme; selecting Everforest or Ayu here changes Neovim's
+has its own terminal color theme; selecting Everforest, Ayu, or Vague here changes Neovim's
 colors rather than the shell's palette. Neovim GUI clients can instead support
 `guifont`, but that setting does not change the font of terminal Neovim.
 
@@ -15,8 +15,8 @@ colors rather than the shell's palette. Neovim GUI clients can instead support
 
 In normal mode, press **Space u c** or run **:Theme**. Neovim's built-in menu
 offers **1: Default (Neovim)**, **2: Everforest**, **3: Ayu (follow background)**,
-**4: Ayu Dark**, **5: Ayu Light**, and **6: Ayu Mirage**. Enter a number and press
-**Enter** to apply it; **Esc** cancels without changing anything. The menu
+**4: Ayu Dark**, **5: Ayu Light**, **6: Ayu Mirage**, and **7: Vague**. Enter a number
+and press **Enter** to apply it; **Esc** cancels without changing anything. The menu
 closes when you select or cancel. Which-key labels Space u as **Appearance**.
 
 For example, open `init.lua`, press **Space u c**, enter **6**, and press **Enter**
@@ -24,6 +24,10 @@ to try Ayu Mirage's softer dark palette. Run `:Theme ayu-light` to compare the
 light palette, or `:Theme default` to return to Default. Each selection remembers
 your choice for future sessions; **Esc** closes the menu when only browsing.
 The initial choice is Default, the built-in Neovim palette you already had.
+
+To try Vague, open `init.lua`, run **:Theme vague**, or choose **7** in the menu.
+Its muted dark palette applies immediately and is remembered for the next startup.
+Use **:Theme default** to switch back; the menu closes after selection or **Esc**.
 
 | Mode / command | Effect |
 | --- | --- |
@@ -35,6 +39,7 @@ The initial choice is Default, the built-in Neovim palette you already had.
 | `:Theme ayu-dark` | Apply and remember Ayu Dark, explicitly setting a dark background. |
 | `:Theme ayu-light` | Apply and remember Ayu Light, explicitly setting a light background. |
 | `:Theme ayu-mirage` | Apply and remember Ayu Mirage, explicitly setting a dark background. |
+| `:Theme vague` | Apply and remember Vague's muted dark palette. |
 | `:colorscheme {name}` | Native command with any supported name above: apply for this session without changing the remembered choice. |
 | `:help everforest.nvim.txt` | Open upstream theme help; load Everforest first if necessary. Close with `:q`. |
 | `:help 'background'` | Explain the dark/light preference followed by plain Ayu and Everforest; close with `:q`. |
@@ -48,7 +53,7 @@ and a warning explains that it was not saved. With multiple Neovim instances,
 the last saved selection is used by the next instance; existing instances do
 not automatically change together.
 
-Everforest and Ayu also set the palette for Neovim's embedded terminals. A `ColorScheme`
+Everforest, Ayu, and Vague also set the palette for Neovim's embedded terminals. A `ColorScheme`
 callback restores the original palette when Default is applied, including via
 `:colorscheme default`. This affects newly opened terminal buffers; existing
 terminal buffers keep the palette they received on creation. Kitty's outer
@@ -98,10 +103,11 @@ change affects the terminal, independently of the selected Neovim theme.
 
 ## Dependencies and settings
 
-Default is built in. **neanias/everforest-nvim** and
-[**Shatur/neovim-ayu**](https://github.com/Shatur/neovim-ayu) are the two selected
-theme plugins; neither requires additional plugins, an icon pack, or a special
-font. Ayu requires Neovim 0.8+; Neovim 0.12.5 with LuaJIT and Git are already
+Default is built in. **neanias/everforest-nvim**,
+[**Shatur/neovim-ayu**](https://github.com/Shatur/neovim-ayu), and
+[**vague-theme/vague.nvim**](https://github.com/vague-theme/vague.nvim) are the selected
+theme plugins; none requires additional plugins, an icon pack, or a special
+font. Ayu requires Neovim 0.8+; Neovim 0.12.0-dev with LuaJIT and Git are already
 available on this device. Kitty supports
 the RGB colors explicitly enabled by `termguicolors`. Git is already used by
 lazy.nvim to install and update plugins. The theme menu uses native `vim.ui.select`
@@ -113,24 +119,33 @@ and does not depend on Telescope or Snacks. The font chooser is part of Kitty.
 | Everforest `version` / `main` | `false` / `"everforest"`: follow upstream's recommended main branch and identify its setup module; the lockfile pins the commit. |
 | `lua/plugins/ayu.lua` | Ayu specification; `opts = {}` keeps upstream styles, `mirage = false`, `terminal = true`, and empty highlight overrides. Explicit variants select their own palettes. |
 | Ayu `version` / `main` | `false` / `"ayu"`: follow the upstream default branch and identify the setup module because its name differs from the repository; the lockfile pins the commit. |
-| Both plugins' `lazy` | `true`: load when one of their colorschemes is requested, keeping them unloaded with Default. |
+| `lua/plugins/vague.lua` | Vague specification; `opts = {}` keeps upstream colors, an opaque background (`transparent = false`), bold/italic styles, and embedded-terminal ANSI colors. |
+| Vague `version` / `main` | `false` / `"vague"`: follow the upstream default branch and identify its setup module; the lockfile pins the commit. |
+| All three plugins' `lazy` | `true`: load when one of their colorschemes is requested, keeping them unloaded with Default. |
 | `lua/config/options.lua`: `termguicolors` | `true`: use RGB theme colors on the supported terminal. |
-| `lua/config/theme.lua`: `themes` | `default`, `everforest`, `ayu`, `ayu-dark`, `ayu-light`, and `ayu-mirage`, for the menu, validation, and completion. |
-| Theme `labels` | Readable names for the selected themes and Ayu variants, including background-following Ayu. |
+| `lua/config/theme.lua`: `themes` | `default`, `everforest`, `ayu`, `ayu-dark`, `ayu-light`, `ayu-mirage`, and `vague`, for the menu, validation, and completion. |
+| Theme `labels` | Readable names for the selected themes and Ayu variants, including background-following Ayu and Vague. |
 | Theme `state_file` | Neovim's state directory; store the choice separately from versioned configuration. |
 | `terminal_colors`, `terminal_color_names`, and the `SelectedTheme` autocommand group | Remember the original ANSI colors plus background/foreground globals and restore them on `ColorScheme default`; clearing the group avoids duplicate callbacks. |
-| Theme menu `prompt`, `format_item` | Label the menu and distinguish built-in Default, Everforest, and each Ayu choice. |
+| Theme menu `prompt`, `format_item` | Label the menu and distinguish built-in Default, Everforest, each Ayu choice, and Vague. |
 | `:Theme` `nargs`, `complete`, `desc` | Optional theme argument, supported-name completion, and an explanatory command description. |
 | `lua/config/keymaps.lua` | Normal-mode Space u c mapping, with its `desc`. |
 | `lua/plugins/which-key.lua` | Normal-mode Appearance group at Space u. |
-| `lua/config/lazy.lua` / `init.lua` | Import both theme specifications and restore the selection after the manager can load them on demand. |
+| `lua/config/lazy.lua` / `init.lua` | Import all three theme specifications and restore the selection after the manager can load them on demand. |
 
 The plugin checkouts are `~/.local/share/nvim/lazy-selected/everforest-nvim`
-and `~/.local/share/nvim/lazy-selected/neovim-ayu`. Ayu is installed explicitly
-through `:Lazy install neovim-ayu` on this device; on a new device, run
+and `~/.local/share/nvim/lazy-selected/neovim-ayu`; Vague lives in
+`~/.local/share/nvim/lazy-selected/vague.nvim`. Ayu and Vague are installed explicitly
+through `:Lazy install neovim-ayu` and `:Lazy install vague.nvim`; on a new device, run
 `:Lazy install` to install all selected plugins, then restart. No extra download
 is needed for each Ayu variant. Installation and updates use Git; no compiler,
-language server, or additional theme plugin is required by Ayu.
+language server, or additional theme plugin is required by Ayu or Vague.
+Vague uses a fixed dark palette with an opaque `#141415` background and
+`#cdcdcd` foreground by default. It has no separate light variant and requires
+no parser, compiler, or native binary. To customize it, edit `opts` in
+`lua/plugins/vague.lua`, commenting each added setting's purpose, then restart.
+Its upstream README documents `transparent`, `bold`, `italic`, `colors`, and
+`on_highlights` options; `opts = {}` deliberately adds no overrides.
 Everforest uses its medium-contrast palette and opaque background by default,
 with italic comments. It follows Neovim's `background` setting for light/dark
 mode; this configuration does not force a different background preference.
@@ -146,16 +161,30 @@ globals. Earlier checks covered invalid-state fallback, the interactive native
 menu, and Kitty's installed chooser; no personal theme or font selection was
 changed during validation.
 
+Vague validation passed for startup, loading on demand, its default foreground,
+background and terminal ANSI palette, command completion, saving and restoring
+the choice in a new session, switching from Ayu Light and back to Everforest/Default,
+and restoring the original terminal colors with Default. Checks used isolated
+state/cache directories; the personal Ayu Mirage selection stayed unchanged.
+lazy.nvim generated Vague's installed commit into `lazy-lock.json`; existing
+plugin versions did not change.
+
 ## Disable or remove
+
+To disable only Vague, first run `:Theme default` (or another remaining choice)
+to save a replacement. Remove the `plugins.vague` import from `lua/config/lazy.lua`
+and the `vague` entries from `themes` and `labels` in `lua/config/theme.lua`.
+Restart Neovim. The specification and checkout can remain unused on disk.
+For a temporary switch, `:colorscheme default` affects only the current session.
 
 To disable only Ayu, first run `:Theme default` or `:Theme everforest` to save
 a remaining choice. Remove the `plugins.ayu` import from `lua/config/lazy.lua`
 and the four `ayu*` entries from `themes` and `labels` in `lua/config/theme.lua`.
 Restart Neovim. The specification and checkout can remain unused on disk.
 
-To use only Default, run `:Theme default` before removing both `plugins.everforest`
-and `plugins.ayu` imports. Remove their supported choices and labels too. To remove
-the theme feature entirely, also remove `require("config.theme").setup()` from
+To use only Default, run `:Theme default` before removing `plugins.everforest`,
+`plugins.ayu`, and `plugins.vague` imports. Remove their supported choices and
+labels too. To remove the theme feature entirely, also remove `require("config.theme").setup()` from
 `init.lua`, the Space u c keymap, and the Appearance group in which-key. Restart
 Neovim. The saved selection and specifications can remain unused on disk.
 Optionally use `:Lazy clean` for unused checkouts in `lazy-selected`.
