@@ -31,9 +31,14 @@ return {
         -- terminals, directory editors, and other special buffers.
         return enabled and vim.bo.buftype == ""
       end,
-      -- Use familiar completion keys: Ctrl-n/p to select, Ctrl-y to accept.
-      -- Enter remains a newline and continues to work with mini.pairs.
-      keymap = { preset = "default" },
+      keymap = {
+        -- Keep familiar controls: Ctrl-n/p and arrows select, Ctrl-y accepts.
+        preset = "default",
+        -- Insert mode: Enter accepts the highlighted suggestion; without a selection,
+        -- fall back to normal newline/mini.pairs behavior.
+        -- Blink supplies this mapping's desc field: "blink.cmp: Accept".
+        ["<CR>"] = { "accept", "fallback" },
+      },
       completion = {
         list = {
           -- Leave text untouched while browsing; insert only on explicit acceptance.

@@ -17,7 +17,7 @@ to open or close.
 | Insert | `"`, `'`, backtick | Insert a matching quote pair, or skip its closer when appropriate. |
 | Insert, before a generated closer | `)`, `]`, `}`, matching quote | Move past it instead of inserting another closer. |
 | Insert, inside an empty pair | `Backspace` | Delete both characters. |
-| Insert, inside empty `()`, `[]`, `{}` | `Enter` | Create a blank line inside the pair and put the closer on another line. Existing indentation settings apply. |
+| Insert, inside empty `()`, `[]`, `{}` | `Enter` | When no completion suggestion is selected, create a blank line inside the pair and put the closer on another line. Existing indentation settings apply. |
 | Insert | `Ctrl-v`, then a character | Insert that character literally, bypassing its pair mapping. |
 | Insert | `Esc` | Leave insert mode using Neovim's native control. |
 

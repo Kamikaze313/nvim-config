@@ -52,7 +52,9 @@ the rename and Esc cancels. Save edited buffers after an LSP rename.
 Only Space c l and Python's gd are new custom mappings. The other keys are
 Neovim defaults. Space c l does nothing outside ordinary Python buffers.
 Automatic suggestions are now supplied by the separately selected **blink.cmp**:
-type `os.pa` after `import os`, select with Ctrl-n/Ctrl-p, and accept with Ctrl-y.
+type `os.pa` after `import os`, select with Down/Up or Ctrl-n/Ctrl-p, and accept
+with Enter or Ctrl-y in insert mode. Enter inserts a newline when nothing is
+selected.
 **Space c c** toggles completion in normal mode; diagnostics and LSP navigation
 continue while it is off. See the [completion guide](completion.md). Formatting,
 debugging, and test-running tools remain independent choices.

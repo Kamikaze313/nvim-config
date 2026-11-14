@@ -9,13 +9,13 @@ off or back on across all buffers in the current Neovim session.
 
 Restart Neovim and open `example.py`. Type `import os`, then start a new line
 and type `os.pa`. Wait for the menu, use **Ctrl-n / Ctrl-p** or **Down / Up** to
-highlight `path`, and press **Ctrl-y** to insert it. A documentation popup
-appears after a selection when the provider supplies documentation.
+highlight `path`, and press **Enter** or **Ctrl-y** to insert it. A documentation
+popup appears after a selection when the provider supplies documentation.
 
 Selecting a suggestion does not change your text until you accept it. With no
-selection, **Ctrl-y** selects and accepts the first item. **Ctrl-e** closes the
+selection, **Enter** inserts a newline with mini.pairs' existing behavior,
+while **Ctrl-y** selects and accepts the first item. **Ctrl-e** closes the
 menu without accepting; **Esc** leaves insert mode and closes completion too.
-**Enter** remains a newline, and mini.pairs keeps its existing Enter behavior.
 
 To disable completion, press **Esc**, then **Space c c**. A message confirms
 `Completion disabled`. Enter insert mode again and type normally. Press the
@@ -32,6 +32,7 @@ navigation. Native manual completion (`Ctrl-x Ctrl-o`) is still available.
 | Command | `:CompletionToggle` | The same session-wide toggle, with an enabled/disabled message. |
 | Insert | `Ctrl-Space` | Request suggestions; with a menu open, show/hide documentation. |
 | Insert | `Ctrl-n` / `Ctrl-p`, `Down` / `Up` | Select next/previous suggestion. |
+| Insert | `Enter` | Accept the highlighted suggestion; without a selection, insert a newline using existing mini.pairs behavior. Blink supplies desc: `blink.cmp: Accept`. |
 | Insert | `Ctrl-y` | Accept the selected suggestion, or the first item if none is selected. |
 | Insert | `Ctrl-e` | Cancel and close completion. |
 | Insert | `Esc` | Leave insert mode and close completion (native). |
@@ -41,9 +42,10 @@ navigation. Native manual completion (`Ctrl-x Ctrl-o`) is still available.
 | Command | `:BlinkCmp status` | Open the same health report; `:q` closes it. |
 | Command | `:help blink-cmp` | Open upstream help; `:q` closes it. |
 
-The insert-mode mappings come from Blink's `default` preset. Blink supplies
-their descriptions and falls back to existing mappings when appropriate. With
-Blink disabled, its mapping actions fall through to native/other mappings.
+The insert-mode mappings come from Blink's `default` preset plus an Enter
+override. Blink supplies their `desc` fields and falls back to existing mappings
+when appropriate. With Blink disabled, its mapping actions fall through to
+native/other mappings.
 The new global mapping is normal-mode Space c c, listed under which-key's Code
 group.
 
@@ -88,7 +90,8 @@ the installed commit into `lazy-lock.json`. Old installations remain separate.
 | `lazy` | `false` | Initialize before LSP clients need completion capabilities. |
 | `main` | `"blink.cmp"` | Identify the setup module for lazy.nvim's options. |
 | `enabled` | Session flag and ordinary-buffer check | Make the global toggle apply to Blink without enabling it in tool windows. |
-| `keymap.preset` | `"default"` | Ctrl-n/p selection, Ctrl-y acceptance, and Enter as newline. |
+| `keymap.preset` | `"default"` | Keep Ctrl-n/p and arrow selection, Ctrl-y acceptance, and the other preset controls. |
+| `keymap["<CR>"]` | `{ "accept", "fallback" }` | Enter accepts only an explicitly selected suggestion; otherwise use existing newline/mini.pairs behavior. |
 | `completion.list.selection` | `preselect = false`, `auto_insert = false` | Keep source text unchanged while browsing. |
 | `completion.documentation.auto_show` | `true` | Show documentation after selecting an item. |
 | `completion.accept.auto_brackets.enabled` | `false` | Leave typed bracket pairing to mini.pairs. |
@@ -99,15 +102,18 @@ the installed commit into `lazy-lock.json`. Old installations remain separate.
 
 To start disabled every time, change `local enabled = true` to `false` and
 update its comment. To change the toggle, edit `<leader>cc` in `keys`. To show
-documentation only on Ctrl-Space, set `auto_show = false`. To accept with Enter,
-change the keymap preset to `"enter"`; it accepts only a selected item with the
-current `preselect = false` setting. Restart after configuration changes.
+documentation only on Ctrl-Space, set `auto_show = false`. To use Enter only
+for newlines, remove the `["<CR>"]` entry from `keymap`. Restart after
+configuration changes.
 
 Validation: startup passed. Real insert-mode checks covered Pyright suggestions,
 automatic documentation, selection without insertion, acceptance, cancellation,
 immediate/session-wide disable and re-enable, buffer/path suggestions, special
 buffer exclusion, and mini.pairs' Enter behavior. Pyright stayed attached while
 completion was disabled.
+The Enter override also passed real Pyright checks: Down then Enter accepted
+`os.path` without adding a line; Enter inserted newlines with no selection,
+with the menu closed, inside an empty bracket pair, and with completion disabled.
 
 ## Disable or remove
 

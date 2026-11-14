@@ -1,4 +1,4 @@
-# Neovim, built one choice at a time
+# My Neovim Config
 
 This configuration is being rebuilt from scratch. Every feature is presented
 before selection, then installed and documented after selection.
@@ -9,7 +9,7 @@ before selection, then installed and documented after selection.
 - Telescope provides file and text search, with plenary as its required helper.
 - grug-far provides visual find/replace on `Space s r` (current file) and `Space s R` (project), using installed ripgrep.
 - Python uses Pyright through native LSP for type checks/navigation, plus Flake8 through nvim-lint for code/style diagnostics.
-- blink.cmp offers automatic LSP, path, and buffer-word suggestions with documentation; `Space c c` toggles completion for the session.
+- blink.cmp offers automatic LSP, path, and buffer-word suggestions with documentation; Enter accepts the highlighted suggestion, and `Space c c` toggles completion for the session.
 - nvim-treesitter adds structure-aware highlighting for Python and Lua, using their compiled language parsers.
 - Oil provides directory browsing and file operations, with no plugin dependencies.
 - Snacks Explorer provides a left file sidebar on `Space e`, using its bundled picker and installed fd/Git.
@@ -148,8 +148,9 @@ full message, **K** shows hover documentation, and **grn** renames a symbol.
 See the [Python guide](docs/python.md) for examples, environments, and dependencies.
 
 For completion, type `import os` in a Python file, then type `os.pa` on the next
-line. Use **Ctrl-n / Ctrl-p** or arrow keys to select a suggestion, **Ctrl-y** to
-accept, and **Ctrl-e** to dismiss. Documentation appears after selection.
+line. In insert mode, use **Ctrl-n / Ctrl-p** or **Down / Up** to select a suggestion,
+**Enter** or **Ctrl-y** to accept, and **Ctrl-e** to dismiss. Enter inserts a
+newline when nothing is selected. Documentation appears after selection.
 Press **Esc**, then **Space c c** to switch completion off or back on; restarting
 Neovim enables it again. See the [completion guide](docs/completion.md).
 
