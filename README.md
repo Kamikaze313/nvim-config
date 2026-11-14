@@ -1,4 +1,4 @@
-# Neovim, built one choice at a time
+# My Neovim Config
 
 This configuration is being rebuilt from scratch. Every feature is presented
 before selection, then installed and documented after selection.
