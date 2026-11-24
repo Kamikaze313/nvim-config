@@ -4,6 +4,8 @@ Blink shows suggestions while typing in ordinary editing buffers, using the
 attached language server, file paths, and words from buffers. Python's Pyright
 provides language-aware suggestions. **Space c c** in normal mode turns Blink
 off or back on across all buffers in the current Neovim session.
+It also controls the selected `:` command suggestions; see the
+[floating command-line guide](command-line.md) for those controls and dependencies.
 
 ## Brief usage
 
@@ -41,6 +43,10 @@ navigation. Native manual completion (`Ctrl-x Ctrl-o`) is still available.
 | Command | `:checkhealth blink.cmp` | Inspect Blink's setup; `:q` closes the report. |
 | Command | `:BlinkCmp status` | Open the same health report; `:q` closes it. |
 | Command | `:help blink-cmp` | Open upstream help; `:q` closes it. |
+| Command line (`:`) | `Ctrl-n` / `Ctrl-p`, `Down` / `Up`, `Tab` / `Shift-Tab` | Browse command/argument suggestions without changing the input. |
+| Command line (`:`) | `Ctrl-y` | Fill the selected/first suggestion; do not execute it. |
+| Command line (`:`) | `Enter` | Run exactly the typed command unless a suggestion was explicitly selected; then accept and execute that suggestion in one step. |
+| Command line (`:`) | `Ctrl-e`, `Esc` | Hide the dropdown, or cancel command entry with Esc. |
 
 The insert-mode mappings come from Blink's `default` preset plus an Enter
 override. Blink supplies their `desc` fields and falls back to existing mappings
@@ -71,8 +77,11 @@ provider's upstream scope. Path suggestions use Blink's standard path provider.
 
 Only ordinary editing buffers (`buftype == ''`) are eligible. Telescope prompts,
 Snacks panels, grug-far's form, Oil, help, and other special buffers are excluded.
-Command-line/search completion and terminal completion are explicitly disabled
-in Blink. Signature help keeps its existing native behavior. Blink's automatic
+Command-line completion is enabled for `:` through Blink's bundled `cmdline`
+provider, with an automatic dropdown beneath the selected Noice input. Its sources
+function returns no candidates for searches/input prompts or when Space c c has
+disabled completion. Terminal completion remains disabled.
+Signature help keeps its existing native behavior. Blink's automatic
 bracket insertion is off; mini.pairs handles characters you type. LSP-provided
 snippets can still include parentheses and placeholders, expanded by Neovim's
 built-in `vim.snippet`; Tab/Shift-Tab navigate those placeholders.
@@ -97,7 +106,11 @@ the installed commit into `lazy-lock.json`. Old installations remain separate.
 | `completion.accept.auto_brackets.enabled` | `false` | Leave typed bracket pairing to mini.pairs. |
 | `sources.default` | `lsp`, `path`, `buffer` | Use the selected completion sources without snippet bundles. |
 | `fuzzy.implementation` | `"lua"` | Avoid a native download or compilation dependency. |
-| `cmdline.enabled`, `term.enabled` | `false` | Preserve existing command/search and shell input behavior. |
+| `cmdline.enabled`, `cmdline.sources` | `true`, conditional bundled `cmdline` provider | Complete only : commands and arguments while the session toggle is enabled. |
+| `cmdline.keymap` | Separate command-line controls with preset `none` | Nothing is selected automatically; accept_and_enter runs only an explicitly selected candidate, falling back to typed-command execution. |
+| `cmdline.completion` | Automatic menu, no preselection/auto-insertion/ghost text | Keep predictions visible in a dropdown and input changes explicit. |
+| `completion.menu.cmdline_position` | Noice screen position plus border space; native fallback | Put the dropdown below the input's border and support :Noice disable. |
+| `term.enabled` | `false` | Preserve existing shell input behavior. |
 | `init`, `keys` | Command and normal-mode shortcut with descriptions | Offer discoverable enable/disable controls. |
 
 To start disabled every time, change `local enabled = true` to `false` and
@@ -114,6 +127,15 @@ completion was disabled.
 The Enter override also passed real Pyright checks: Down then Enter accepted
 `os.path` without adding a line; Enter inserted newlines with no selection,
 with the menu closed, inside an empty bracket pair, and with completion disabled.
+The selected Noice command UI also passed real command-mode checks for automatic
+command/argument suggestions, explicit selection/acceptance, cancellation,
+the shared toggle, bottom search exclusion,
+native positioning when Noice is disabled, and unchanged insert-mode acceptance.
+The final command Enter mapping (`accept_and_enter`, then `fallback`) passed
+real-mode checks: :q executes unchanged with suggestions visible and nothing
+selected; Down/Up selection plus Enter accepts and runs the candidate once.
+Checks also covered argument completion, clearing selection after editing,
+cancellation, and disabled-completion fallback. Command preselection stays off.
 
 ## Disable or remove
 

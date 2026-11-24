@@ -14,10 +14,13 @@ before selection, then installed and documented after selection.
 - Oil provides directory browsing and file operations, with no plugin dependencies.
 - Snacks Explorer provides a left file sidebar on `Space e`, using its bundled picker and installed fd/Git.
 - mini.icons supplies Explorer's file/folder icons and grug-far's result file icons; Nerd Fonts 3+ glyph support is required (already configured in Kitty).
+- lualine supplies a single bottom statusline with mode icons, angled separators, filename, and line:column; it uses the existing Nerd Font and needs no helper plugin. See the [statusline guide](docs/statusline.md).
+- Pressing `:` opens Noice's top-center command input with an automatic Blink suggestion dropdown; Nui is its required rendering helper. Enter runs exactly what you typed unless you select a suggestion with the arrow keys; then Enter accepts and runs that suggestion. Esc closes it. See the [command-line guide](docs/command-line.md).
 - Gitsigns shows Git changes beside lines and provides hunk actions; it requires Git only.
 - Which-key shows available shortcuts after a 200 ms pause; no extra plugins or special font are required.
 - mini.pairs inserts matching brackets and quotes in insert mode, with no additional dependencies.
 - `Space u c` chooses Default, Everforest, Ayu (including Dark, Light, and Mirage), Vague, or Embark and remembers the selection; fonts are chosen in Kitty.
+- Kitty padding and margins are zero so Neovim fills the terminal's available content area; reload Kitty with `Ctrl-Shift-F5`. See the [appearance guide](docs/appearance.md#fill-the-terminal).
 - `Ctrl-/` in normal mode or terminal input toggles a reusable bottom terminal; `Esc Esc` leaves terminal input.
 - Executed `:q` / `:quit` text clears after a successful window or tab close; failed-quit errors remain visible.
 - Space is the shortcut leader; Telescope loads only when invoked.
@@ -26,11 +29,13 @@ before selection, then installed and documented after selection.
 - Which-key loads just after startup and labels Find, Search / replace, Code, Git hunks, and Appearance.
 - grug-far loads on request, starts with literal matching, and previews changes before the Replace action writes files.
 - Pyright starts for Python buffers and checks while editing; Flake8 checks on buffer entry/save or `Space c l`. Diagnostics appear beside the code.
-- Blink sets up at startup using its Lua matcher, without additional plugins or native binary downloads; command-line and terminal completion remain unchanged.
+- Blink sets up at startup using its Lua matcher; it also completes : commands/arguments, while search and terminal completion remain excluded. Space c c toggles both editor and command suggestions.
 - Tree-sitter loads at startup and enables highlighting when opening Python/Lua source buffers; parser downloads are explicit, with no network access during ordinary editing.
 - mini.pairs sets up at startup so Telescope search prompts are excluded even on first use; command-line and terminal input are excluded.
 - Snacks sets up at startup; the sidebar opens on request, leaving directory buffers to Oil.
 - mini.icons loads before Snacks as its dependency and selects icons automatically by filename, extension, and folder.
+- lualine loads just after startup, follows theme changes, and replaces the separate mode message with its colored icon.
+- Noice loads just after startup with Nui, displaying : input near the top and search/input prompts at the bottom; its message, notification, and LSP interfaces are disabled.
 - RGB colors are enabled; automatic formatting is not configured.
 - Yank and paste share the Linux desktop clipboard automatically through `unnamedplus`; Wayland uses installed `wl-copy`/`wl-paste`, with `xclip` available for X11. See the [clipboard guide](docs/clipboard.md).
 - Plugin installation and update checks are manual; see [manager instructions](docs/plugin-manager.md).
@@ -72,6 +77,8 @@ for dependencies and installation checks.
 | `lua/plugins/which-key.lua` | Shortcut hints, popup delay, group labels, and plain-text key labels. |
 | `lua/plugins/explorer.lua` | Project file sidebar, Space e toggle, and required bundled helpers. |
 | `lua/plugins/icons.lua` | Standalone icon provider, glyph style, and optional file/extension overrides. |
+| `lua/plugins/statusline.lua` | Lualine mode glyphs, theme-following colors, single bottom bar, and minimal sections. |
+| `lua/plugins/command-line.lua` | Noice top command input, required Nui renderer, bottom search/input formats, and disabled extra interfaces. |
 | `lua/plugins/everforest.lua` | Everforest colorscheme, loaded only when selected. |
 | `lua/plugins/ayu.lua` | Ayu colorschemes and variants, loaded only when selected. |
 | `lua/plugins/vague.lua` | Vague's muted dark colorscheme, loaded only when selected. |
@@ -89,9 +96,10 @@ for dependencies and installation checks.
 | `docs/which-key.md` | Shortcut popup controls, examples, automatic behavior, and removal. |
 | `docs/explorer.md` | File-tree navigation, file operations, dependencies, and removal. |
 | `docs/icons.md` | File icons, font requirements, customization examples, and disabling instructions. |
-| `docs/appearance.md` | Theme switching, persistence, Kitty font chooser, and disabling instructions. |
+| `docs/statusline.md` | Mode icon legend, editing example, dependencies, customization, and disabling instructions. |
+| `docs/appearance.md` | Theme switching, persistence, Kitty fonts and terminal spacing, and disabling instructions. |
 | `docs/terminal.md` | Bottom terminal controls, shell lifecycle, dependencies, and disabling instructions. |
-| `docs/command-line.md` | Quit-command display cleanup, examples, and disabling instructions. |
+| `docs/command-line.md` | Floating command input and dropdown, controls, dependencies, quit-text cleanup, and disabling instructions. |
 | `docs/pairs.md` | Bracket/quote controls, examples, limitations, and disabling instructions. |
 | `docs/clipboard.md` | Linux clipboard dependencies, yank/paste controls, examples, and disabling instructions. |
 | `docs/features.md` | Feature pitches, manager comparison, and selection status. |
@@ -197,6 +205,12 @@ to preview the hunk. Move the cursor to close the popup. Use `Space h s` to
 stage it; on that staged hunk, use the same shortcut again to unstage it.
 See the [Gitsigns usage guide](docs/gitsigns.md) for signs, commands, and examples.
 
+To try the statusline, open `nvim init.lua`: **** marks normal mode. Press **i**
+to see the **** pencil, then **Esc** to return; **v** shows the **** selection
+icon, and **Esc** leaves visual mode. The bar follows the focused window and
+your selected theme automatically. It has no separate panel or custom shortcut;
+**:q** closes the file normally. See the [statusline guide](docs/statusline.md).
+
 To change colors, press **Space u c** (or run `:Theme`), enter **1** for Default,
 **2** for Everforest, **3** for Ayu (follow background), **4** for Ayu Dark,
 **5** for Ayu Light, **6** for Ayu Mirage, **7** for Vague, or **8** for Embark,
@@ -210,6 +224,12 @@ Kitty shell;
 the font belongs to the terminal and is independent of the Neovim theme.
 See the [appearance guide](docs/appearance.md).
 
+For the terminal sizing fix, press **Ctrl-Shift-F5** to reload Kitty, then run
+`nvim init.lua` in a normal shell. Neovim uses the available terminal content
+area without the added padding and margins. **Ctrl-Shift-F11** toggles Kitty's
+fullscreen mode; **:q** closes Neovim. The reload and fullscreen shortcuts work
+while Neovim is running. See the [spacing guide](docs/appearance.md#fill-the-terminal).
+
 To run a command beside your code, press **Ctrl-/** in normal mode. The terminal
 opens at the bottom, ready for typing; try `pwd`. Press **Ctrl-/** again to hide
 it directly from terminal input, then use the same shortcut to reopen the shell.
@@ -218,7 +238,15 @@ press **i** to resume shell input. `:BottomTerminal` provides the same toggle.
 See the [terminal guide](docs/terminal.md) for window navigation, shell exit,
 and terminal key encoding. Normal-mode `?` uses Neovim's backward search again.
 
-To close a split or tab, run **:q** and press Enter. After a successful close,
+To try command suggestions, type **:colorscheme def** in normal mode. The
+input appears near the top with matching suggestions and nothing selected. Use
+**Down / Up** to select `default`, and press **Enter**
+to accept and run it. Without selecting a suggestion, Enter runs exactly what
+you typed, so **:q Enter** only quits the current window. **Esc** cancels input.
+See the [command-line guide](docs/command-line.md) for controls and removal.
+
+To close a split or tab, type **:q** and press **Enter** without selecting a
+suggestion. After a successful close,
 the bottom command line clears automatically. An unsaved-file error remains
 visible if the close fails. See the [command-line guide](docs/command-line.md).
 

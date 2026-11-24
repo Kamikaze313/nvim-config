@@ -6,12 +6,17 @@ Gitsigns for Git change markers and hunk actions, which-key for shortcut hints,
 and Snacks Explorer for a project sidebar with its required bundled picker.
 Default, Everforest, Ayu (including Dark, Light, and Mirage), Vague, and Embark are selected
 for theme switching; fonts use Kitty's existing chooser.
+Requested terminal sizing fix sets Kitty padding and margins to zero so Neovim
+fills the available terminal content area. [Usage guide](appearance.md#fill-the-terminal).
 A native bottom terminal is selected on `Ctrl-/` in normal mode and terminal input;
 `Esc Esc` enters terminal normal mode. No new plugin is required.
 Requested quit-command display cleanup clears retained :q text after a successful close.
 mini.pairs is selected for insert-mode bracket and quote pairing.
 Standalone mini.icons is selected for Snacks Explorer's file/folder icons,
 using Nerd Fonts 3+ glyphs already supported by the configured Kitty font.
+lualine is selected for a single bottom statusline with mode icons, angled
+separators, filename, and cursor position. It follows theme changes and needs
+no helper plugin; the existing Nerd Font supplies its glyphs. [Usage guide](statusline.md).
 grug-far is selected for visual find/replace, with current-file and project
 shortcuts, literal matching by default, and the existing ripgrep backend.
 Python support is selected: Flake8 via nvim-lint and Pyright via native Neovim
@@ -24,6 +29,11 @@ clipboard through native `unnamedplus`, with installed wl-clipboard on Wayland
 and xclip available for X11. [Usage guide](clipboard.md).
 nvim-treesitter is selected for Python/Lua highlighting, with manually installed
 parsers and a separate parser/query directory; folding and text objects remain optional.
+Noice + required nui.nvim are selected for a top-center : command input with an
+automatic Blink dropdown with no automatic selection. Enter runs the typed command;
+after arrow-key selection, Enter accepts and runs that suggestion. Esc closes it.
+Search/input prompts stay at the bottom; native messages and LSP UI remain active.
+[Usage guide](command-line.md).
 Other optional features remain proposals and will be introduced one at a time for yes/no.
 Individual parts of a row can be selected separately.
 
@@ -51,7 +61,7 @@ the rebuild. See [the inventory](previous-setup.md) for the evidence and caveats
 | 1 | **Make every edit comfortable.** Line numbers, readable search, predictable splits, and visible copied text. | Built-in settings and a yank-highlight autocommand; shortcuts and leader chosen explicitly. | Suggested foundation; old LazyVim also provided defaults. |
 | 2 | **Copy here, paste anywhere.** Share Neovim's clipboard with desktop apps. | **Selected: built-in `unnamedplus`.** Uses installed wl-clipboard on Wayland; xclip is available for X11. Ordinary yank, delete, change, and paste use the desktop clipboard; no plugin or custom shortcut. [Usage guide](clipboard.md). | Previously explicit; selected now. |
 | 3 | **Indent your way.** Four-column real tabs for your 42 C work, with language-specific rules if wanted. | Built-in indentation settings; choose global or C-only behavior. | Previously global; format-on-save was disabled. |
-| 4 | **Choose your editor's colors.** Switch between Default, Everforest, Ayu's Dark/Light/Mirage palettes, Vague's muted dark palette, and Embark's deep purple palette. | **Selected: Default + `neanias/everforest-nvim` + `Shatur/neovim-ayu` + `vague-theme/vague.nvim` + `embark-theme/vim`.** These theme plugins need no helper plugins or special fonts; Embark uses the existing true-color support. `Space u c` / `:Theme` remembers the choice. Kitty's existing font chooser controls terminal fonts. [Usage guide](appearance.md). Statusline, tabs, and winbar remain unselected. | OneDark and winbar were explicit before the rebuild; Default/Everforest/Ayu/Vague/Embark selected now. |
+| 4 | **Choose your editor's colors.** Switch between Default, Everforest, Ayu's Dark/Light/Mirage palettes, Vague's muted dark palette, and Embark's deep purple palette. | **Selected: Default + `neanias/everforest-nvim` + `Shatur/neovim-ayu` + `vague-theme/vague.nvim` + `embark-theme/vim`.** These theme plugins need no helper plugins or special fonts; Embark uses the existing true-color support. `Space u c` / `:Theme` remembers the choice. Kitty's existing font chooser controls terminal fonts. [Usage guide](appearance.md). **Lualine is also selected** for mode icons and a theme-following bottom statusline using the existing Nerd Font. [Statusline guide](statusline.md). Tabs and winbar remain unselected. | OneDark and winbar were explicit before the rebuild; Default/Everforest/Ayu/Vague/Embark and lualine selected now. |
 | 5 | **Find anything in seconds.** Search filenames, project text, open buffers, and recent files. | **Selected: Telescope + plenary.** Uses installed ripgrep and fd. [Usage guide](telescope.md). | Telescope was explicit in the old setup. |
 | 6 | **Manage folders using Vim editing.** Browse, create, rename, move, and delete files in an editable directory view. | **Selected: Oil.nvim.** No required plugin dependencies. [Usage guide](oil.md). | New selection for this rebuild. |
 | 7 | **An editor that understands C/C++.** Jump to definitions, inspect types, rename symbols, and see errors while coding. | Native LSP plus clangd; optional `nvim-lspconfig` and Mason for setup/tool management. | clangd extra explicitly enabled. |
@@ -69,7 +79,7 @@ the rebuild. See [the inventory](previous-setup.md) for the evidence and caveats
 | 19 | **An AI partner inside the editor.** Ask about selected code and optionally get inline suggestions. | Copilot Chat / Copilot as selected; account access and service eligibility required. | Copilot Chat extra explicit. |
 | 20 | **Give every language the right tools.** Add Python, TOML, Lua, or other languages you use. | **Selected: Python with Pyright through native LSP**, basic type checks, hover, definition, references, and rename. Uses Node.js and the external Pyright server; Blink supplies automatic completion. [Python guide](python.md). Other language servers, parsers, and formatters remain selectable. | Python selected now; TOML/Lua tooling was present before the rebuild. |
 | 21 | **Change a project in one pass.** Search and replace across files, and surface TODO notes. | **Selected: grug-far.nvim** for a visual replacement form with live preview, current-file/project scope, and installed ripgrep. [Usage guide](replace.md). TODO comments remain unselected. | Both in old lockfile; grug-far selected for this rebuild. |
-| 22 | **Polish the interface.** Floating command input, notifications, and icons. | **Selected: standalone `mini.icons` for Explorer.** Needs Nerd Fonts 3+ glyph support, already configured in Kitty. [Icon guide](icons.md). Noice and Snacks notifications remain unselected. | Noice/icons in old lockfile; Snacks notifications explicitly disabled. |
+| 22 | **Polish the interface.** Floating command input, notifications, and icons. | **Selected: standalone `mini.icons` for Explorer.** Needs Nerd Fonts 3+ glyph support, already configured in Kitty. [Icon guide](icons.md). **Noice + nui.nvim are selected for top-center command input with existing Blink suggestions.** [Command-line guide](command-line.md). Notification enhancements remain unselected. | Noice/icons in old lockfile; Snacks notifications explicitly disabled. |
 | 23 | **Keep your project tree beside your code.** Browse folders and open files from a left sidebar on Space e. | **Selected: Snacks Explorer + its bundled picker.** Uses installed fd/Git and the selected mini.icons provider for file/folder glyphs. [Usage guide](explorer.md). | Restores the sidebar from the previous LazyVim setup. |
 | 24 | **Run commands beside your code.** Toggle a reusable shell at the bottom with Ctrl-/. | **Selected: Neovim's built-in terminal.** Esc Esc enters normal mode while keeping the pane open. Requires the configured shell; no plugin dependency. [Usage guide](terminal.md). | Explicitly selected for this rebuild. |
 
@@ -87,8 +97,9 @@ basics in row 1 have not been selected.
 | Choose plugin manager | lazy.nvim selected as manager only; no distribution imports. Missing plugins need an explicit `:Lazy install` on each new device; see [setup instructions](plugin-manager.md#on-a-new-device). |
 | Linux clipboard sharing (row 2) | Requested integration in both directions: native `unnamedplus` connects ordinary yank/paste to desktop apps, using wl-copy/wl-paste on Wayland or xclip/xsel on X11. Required wl-clipboard and X11 fallback xclip are already installed. [Usage guide](clipboard.md). |
 | Themes and font controls (row 4) | Default/Everforest/Ayu/Vague/Embark menu selected with persistence and true-color rendering. Ayu offers background-following, Dark, Light, and Mirage choices through one plugin. Vague and Embark use their upstream palettes and styles, with no extra dependencies. Embark is a fixed dark purple theme on menu option 8 or `:Theme embark`. Fonts use the existing Kitty chooser; no terminal font is changed automatically. |
+| Statusline (part of row 4) | lualine selected from the offered lualine/mini.statusline/heirline choices. A single bottom bar shows mode glyphs, angled separators, filename, and line:column. Loads on VeryLazy, follows the theme and focused window, and disables the duplicate showmode text. Uses the existing Nerd Font with no helper plugin or custom keymap. [Usage guide](statusline.md). |
 | File and text search (row 5) | Telescope selected, with required plenary dependency and Space leader shortcuts. |
-| Automatic completion (part of row 8) | blink.cmp selected with LSP/path/buffer sources, automatic documentation, and a global session toggle on Space c c / :CompletionToggle. Requested Enter acceptance of highlighted suggestions; Enter inserts a newline when nothing is selected, and Ctrl-y remains available. Uses the Lua matcher; no snippet pack, command-line completion, or terminal completion added. |
+| Automatic completion (part of row 8) | blink.cmp selected with LSP/path/buffer sources, automatic documentation, and a global session toggle on Space c c / :CompletionToggle. Requested Enter acceptance of highlighted suggestions; Enter inserts a newline when nothing is selected, and Ctrl-y remains available. Uses the Lua matcher and also supplies the selected : command dropdown through its bundled provider. No snippet pack or terminal completion added. |
 | Structural highlighting (part of row 9) | nvim-treesitter selected for Python and Lua, starting automatically in source buffers. Parsers/queries live in `treesitter-selected`, separate from previous installations. CLI and parsers installed explicitly; no new keymaps, folding, indentation engine, or text-object plugin. |
 | Directory editing (row 6) | Oil selected, with `-` to open a directory and confirmation before applying edits. |
 | Git change markers and hunk actions (row 13) | Gitsigns selected, with automatic signs and buffer-local navigation, preview, stage/reset, and blame shortcuts. LazyGit remains unselected. |
@@ -99,7 +110,9 @@ basics in row 1 have not been selected.
 | Project file sidebar (row 23) | Snacks Explorer selected with its bundled picker, Space e toggle, and Git-root/cwd browsing. Oil still handles directory buffers; Telescope remains the search tool. Other Snacks features are not enabled globally. |
 | File and folder icons (part of row 22) | Standalone mini.icons selected as a Snacks dependency, with automatic default icons and documented filename/extension overrides. Kitty's configured Nerd Font provides the glyphs. No new shortcuts. |
 | Bottom terminal (row 24) | Native terminal selected on `Ctrl-/` in normal mode and terminal input, plus `:BottomTerminal`, initially 12 rows high. Hiding preserves the shell; `Esc Esc` enters terminal normal mode without hiding. Both Ctrl-/ and its Ctrl-_ terminal encoding are mapped. |
+| Floating command input (part of row 22) | Noice selected with required nui.nvim. A rounded top-center : input has automatic Blink command/argument suggestions below it; Nothing is selected automatically. Enter runs the typed command, including :q; after Down/Up selects a suggestion, Enter accepts and runs it in one step. Esc closes. Search/input prompts use the bottom view. Extra Noice message/notification/LSP interfaces are disabled. [Usage guide](command-line.md). |
 | Quit-command display cleanup | Requested fix: clear retained `:q` / `:quit` text after its window closes successfully, preserving failed-quit errors. Native autocommand; [usage guide](command-line.md). |
+| Terminal content sizing | Requested fix: `window_padding_width 0` and `window_margin_width 0` in the external `~/.config/kitty/kitty.conf` remove the added frame around Neovim and other terminal apps. Reload with Kitty's Ctrl-Shift-F5; Ctrl-Shift-F11 toggles Kitty fullscreen. Uses existing Kitty; no plugin or custom Neovim mapping. [Usage and reversal](appearance.md#fill-the-terminal). |
 | Other optional features | Awaiting selection, one package at a time. |
 
 When selected, expand each feature's documentation with its exact settings,

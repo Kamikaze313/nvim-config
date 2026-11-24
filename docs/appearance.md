@@ -1,4 +1,4 @@
-# Appearance: themes in Neovim, fonts in Kitty
+# Appearance: themes in Neovim, fonts and spacing in Kitty
 
 Neovim's colorscheme controls code, editor backgrounds, and plugin highlights.
 When Neovim runs in a terminal, the terminal controls the font family, size,
@@ -75,6 +75,43 @@ Within a session, plain Ayu also retains its last Dark/Mirage preference;
 `:Theme ayu-dark` resets it to Dark, while `:Theme ayu-mirage` selects Mirage.
 Embark has a fixed dark palette and sets `background=dark` when applied.
 Switching afterward to plain Ayu, Everforest, or Default follows that dark preference.
+
+## Fill the terminal
+
+Neovim uses the terminal's available rows and columns. The inset around its
+screen came from Kitty's `window_padding_width 2 10 5` and
+`window_margin_width 2 10 5`, each adding 2 points above, 10 on each side,
+and 5 below the terminal content. Both settings are now zero in
+`~/.config/kitty/kitty.conf` so that extra frame disappears. This applies to
+the shell and other applications in Kitty as well as Neovim.
+
+Press **Ctrl-Shift-F5** to reload Kitty's configuration, or open a new Kitty
+instance. For example, run `nvim init.lua` from this configuration directory
+in a normal shell. The editor fills the available terminal content area.
+Press **i** to edit, **Esc** to return to normal mode, and **:q** to close
+Neovim; use **:wq** if you made changes you want to save.
+
+To make the Kitty window cover the entire screen too, press
+**Ctrl-Shift-F11**; press it again to return to the previous window size.
+Reload and fullscreen are Kitty's built-in shortcuts and work while Neovim
+is running, in any editor mode. This change adds no Neovim commands or keymaps.
+It requires only the existing Kitty installation and applies whenever Kitty
+loads or reloads its configuration.
+
+| Kitty setting | Value / reason |
+| --- | --- |
+| `window_padding_width` | `0`: remove the space inside each terminal around the text grid. |
+| `window_margin_width` | `0`: remove the extra space outside each terminal that frames the editor. |
+
+To reverse the change, restore `window_padding_width 2 10 5` and
+`window_margin_width 2 10 5` in `~/.config/kitty/kitty.conf`, then press
+**Ctrl-Shift-F5**. These settings live outside this repository; copying the
+Neovim configuration to another device does not copy Kitty's spacing settings.
+
+Validation: Kitty's installed configuration parser accepted the changed file
+and its theme include, all padding and margin edges were zero, and comparison
+with the original parsed configuration found only these two settings changed.
+Neovim's headless startup check passed.
 
 ## Choose fonts in Kitty
 

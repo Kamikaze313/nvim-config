@@ -10,14 +10,16 @@ The manager exposes `:Lazy` and manages installation, updates, version records,
 dependencies, and plugin loading. The `spec` table explicitly imports
 `plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`, `plugins.treesitter`,
 `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`,
-`plugins.explorer`, `plugins.icons`, `plugins.everforest`, `plugins.ayu`, `plugins.vague`, `plugins.embark`, and `plugins.pairs`.
+`plugins.explorer`, `plugins.icons`, `plugins.statusline`, `plugins.command-line`, `plugins.everforest`, `plugins.ayu`, `plugins.vague`, `plugins.embark`, and `plugins.pairs`.
 The manager currently lists itself, Telescope, Telescope's required helper plenary,
 Oil, Gitsigns, which-key, Snacks (Explorer with its bundled picker), Everforest, Ayu, Vague, Embark,
-grug-far, nvim-lint, blink.cmp, nvim-treesitter, and the standalone mini.pairs and mini.icons plugins.
+grug-far, nvim-lint, blink.cmp, nvim-treesitter, lualine, Noice with its required Nui helper, and the standalone mini.pairs and mini.icons plugins.
 See the [Telescope usage guide](telescope.md), [Oil usage guide](oil.md),
 [Gitsigns usage guide](gitsigns.md), [which-key usage guide](which-key.md), and
 [Explorer usage guide](explorer.md), [icon guide](icons.md), and [pairing usage guide](pairs.md).
 Theme selection and terminal fonts are covered in the [appearance guide](appearance.md).
+Mode icons and the theme-following bottom bar are covered in the [statusline guide](statusline.md).
+Top command input, its Blink dropdown, and Nui are covered in the [command-line guide](command-line.md).
 Visual find/replace is covered in the [replacement guide](replace.md).
 Python's Flake8 and native Pyright setup is covered in the [Python guide](python.md).
 Automatic completion and its session toggle are covered in the [completion guide](completion.md).
@@ -36,7 +38,7 @@ returns to the editor instead of exiting it.
 | `plugin_root` | `stdpath("data") .. "/lazy-selected"` | Directory for this rebuild's manager and selected plugins. |
 | `lazypath` | `plugin_root .. "/lazy.nvim"` | Load the manager's separate checkout, or bootstrap it there when absent. |
 | `rtp:prepend(lazypath)` | Manager directory first in the runtime path | Make its Lua module available. |
-| `spec` | Explicit imports of `plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`, `plugins.treesitter`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`, `plugins.explorer`, `plugins.icons`, `plugins.everforest`, `plugins.ayu`, `plugins.vague`, `plugins.embark`, and `plugins.pairs` | Load only the selected feature specifications. |
+| `spec` | Explicit imports of `plugins.telescope`, `plugins.replace`, `plugins.lint`, `plugins.completion`, `plugins.treesitter`, `plugins.oil`, `plugins.gitsigns`, `plugins.which-key`, `plugins.explorer`, `plugins.icons`, `plugins.statusline`, `plugins.command-line`, `plugins.everforest`, `plugins.ayu`, `plugins.vague`, `plugins.embark`, and `plugins.pairs` | Load only the selected feature specifications. |
 | `root` | `stdpath("data") .. "/lazy-selected"` | Keep the rebuild's plugins separate from previous plugin installations. |
 | `local_spec` | `false` | Prevent project `.lazy.lua` files from extending the selected plugin list. |
 | `install.missing` | `false` | Install declared plugins explicitly, not during normal startup. |
@@ -61,6 +63,10 @@ handling directory buffers. Explorer uses bundled input/window/file-operation
 helpers on demand without replacing general input or selection dialogs.
 The standalone mini.icons provider loads before Snacks as its explicit dependency
 and supplies Explorer's file/folder icons. It does not import other mini modules.
+Lualine loads on `VeryLazy` just after startup, once the selected theme is restored.
+Its mode glyphs use the terminal's existing Nerd Font directly, without a helper
+plugin. It keeps one statusline below all splits and updates as the mode, focused
+window, filename, cursor position, or theme changes.
 Everforest loads on `:colorscheme everforest`; Ayu loads on `:colorscheme ayu`,
 `ayu-dark`, `ayu-light`, or `ayu-mirage`; Vague loads on `:colorscheme vague`;
 Embark loads on `:colorscheme embark` and is named `embark` in the manager.
@@ -80,7 +86,14 @@ its server is installed separately through npm and is not a lazy.nvim plugin.
 Blink initializes at startup before native LSP clients start, so its upstream
 plugin can advertise completion capabilities through `vim.lsp.config('*', ...)`.
 Its bundled Lua matcher and LSP/path/buffer sources require no helper plugins,
-native binary downloads, or Rust compiler. Space c c toggles it for the session.
+native binary downloads, or Rust compiler. Space c c toggles editor and : command suggestions for the session.
+Noice loads on VeryLazy with its required Nui rendering helper and floats : input
+near the top. Blink uses its bundled cmdline provider for command/argument
+suggestions and places its automatic menu below the input with no automatic
+selection. Enter runs the typed command; after selecting a candidate with the
+arrow keys, Enter accepts and executes it in one step. Searches/input prompts
+use the bottom command view. Noice message/notification/popupmenu/LSP interfaces
+are disabled; command output and errors use the native message UI.
 Tree-sitter loads at startup as required upstream. A FileType autocmd starts
 native highlighting for Python/Lua source buffers. Its build hook runs
 `:TSUpdate python lua` during explicit plugin installation/updates, updating only
